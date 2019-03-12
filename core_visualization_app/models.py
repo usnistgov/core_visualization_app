@@ -1,6 +1,7 @@
 """Visualization models
 """
 from django.db import models
+
 from core_main_app.permissions.utils import get_formatted_name
 from core_visualization_app.permissions import rights
 

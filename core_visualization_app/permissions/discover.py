@@ -1,6 +1,7 @@
 """ Initialize permissions for core schema viewer app
 """
 from django.contrib.auth.models import Group, Permission
+
 import core_main_app.permissions.rights as main_rights
 import core_visualization_app.permissions.rights as visualization_rights
 

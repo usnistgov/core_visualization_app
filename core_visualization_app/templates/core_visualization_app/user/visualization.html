@@ -1,0 +1,41 @@
+{% load staticfiles %}
+
+        <p>
+        Select one or multiple projects, then chose your test category and eventually your test type.
+        Once you make your selection, click on the confirm button and both a plot and a data table appear.
+        You can configure your plot and use the tools to zoom and to download the visualization. You can also download the data table.
+    </p>
+
+<div id="selection-header">
+
+    <h1 class="page-header">Selection</h1>
+
+</div>
+
+<form id="select-projects-form" method="post" style="visibility: visible; float: left; width:33.33%;">
+    {% csrf_token %}
+    {{ data.project }}
+</form>
+
+  <form id="select-category-form" method="post" style="visibility: visible; float: left; width:33.33%;">
+    {% csrf_token %}
+    {{ data.categories }}
+</form>
+
+   <form id="select-subcategory-form" method="post" style="visibility: hidden; float: right; width:33.33%;">
+    {% csrf_token %}
+    {{ data.subcategories }}
+</form>
+
+<button type="button" name="" id="load-test-data" class="btn btn-info" style="visibility: hidden; text-align: right; vertical-align: bottom">Confirm</button>
+
+<div id="loading_background" style="visibility: hidden;">
+{% include 'core_visualization_app/common/loading_background.html' %}
+</div>
+
+ {% include 'core_visualization_app/user/plot.html' %}
+
+
+<p></p>
+
+ {% include 'core_visualization_app/user/data_table.html' %}
