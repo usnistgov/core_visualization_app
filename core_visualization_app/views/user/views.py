@@ -27,57 +27,66 @@ def index(request):
     Returns:
 
     """
+    error = None
+    active_ontology = None
+
     try:
         # Set up the needed explore tree related objects to get the queries
         # get the active ontology
         active_ontology = query_ontology_api.get_active()
-        # Get the active ontology's ID
-        template_id = active_ontology.template.id
-        nav_key = active_ontology.id
+    except exceptions.DoesNotExist:
+        error = {"error": "An Ontology should be active to explore. Please contact an admin."}
 
-        # get the navigation from the cache
-        if nav_key in navigation_cache:  # if template_id in navigation_cache:
-            navigation = navigation_cache.get(nav_key)  # navigation_cache.get(template_id)
-        else:
-            # create the navigation
-            navigation = create_navigation_tree_from_owl_file(active_ontology.content)
-            navigation_cache.set(nav_key, navigation)  # navigation_cache.set(template_id, navigation)
+    if error is None:
+        try:
+            # Get the active ontology's ID
+            template_id = active_ontology.template.id
+            nav_key = active_ontology.id
 
-        # Delete all projects from a previous instance
-        api.delete_all_projects()
+            # get the navigation from the cache
+            if nav_key in navigation_cache:  # if template_id in navigation_cache:
+                navigation = navigation_cache.get(nav_key)  # navigation_cache.get(template_id)
+            else:
+                # create the navigation
+                navigation = create_navigation_tree_from_owl_file(active_ontology.content)
+                navigation_cache.set(nav_key, navigation)  # navigation_cache.set(template_id, navigation)
 
-        # Get the existing projects from the navigation
-        projects_tuples = api.get_projects(navigation, template_id)
-        select_projects = SelectProjects()
-        select_projects.fields['projects'].choices = projects_tuples
+            # Delete all projects from a previous instance
+            api.delete_all_projects()
 
-        # Get the existing categories from the ontology
-        categories_tuples, categories_tree = api.get_categories(active_ontology)
-        select_category = SelectTestCategory()
-        select_category.fields['categories'].choices = categories_tuples
+            # Get the existing projects from the navigation
+            projects_tuples = api.get_projects(navigation, template_id)
+            select_projects = SelectProjects()
+            select_projects.fields['projects'].choices = projects_tuples
 
-        # Get the existing subcategories from the ontology
-        subcategories_tuples_list = api.get_subcategories_tuples(categories_tuples, categories_tree)
-        select_subcategory_tuples = []
+            # Get the existing categories from the ontology
+            categories_tuples, categories_tree = api.get_categories(active_ontology)
+            select_category = SelectTestCategory()
+            select_category.fields['categories'].choices = categories_tuples
 
-        for i in range(1, len(subcategories_tuples_list), 2):
-            for tuples in subcategories_tuples_list[i]:
-                select_subcategory_tuples.append(tuples)
-        select_subcategory = SelectTestSubcategory()
-        select_subcategory.fields['subcategories'].choices = select_subcategory_tuples
+            # Get the existing subcategories from the ontology
+            subcategories_tuples_list = api.get_subcategories_tuples(categories_tuples, categories_tree)
+            select_subcategory_tuples = []
 
-    except exceptions.DoesNotExist as e_does_not_exist:
-        error = {"message": e_does_not_exist.message}
-        return HttpResponse(json.dumps(error), status=HTTP_404_NOT_FOUND)
-    except Exception as e:
-        # FIXME use logger e.message
-        return HttpResponseBadRequest(e.message)
+            for i in range(1, len(subcategories_tuples_list), 2):
+                for tuples in subcategories_tuples_list[i]:
+                    select_subcategory_tuples.append(tuples)
+            select_subcategory = SelectTestSubcategory()
+            select_subcategory.fields['subcategories'].choices = select_subcategory_tuples
 
-    context = {
-        'project': select_projects,
-        'subcategories': select_subcategory,
-        'categories': select_category,
-    }
+        except exceptions.DoesNotExist as e_does_not_exist:
+            error = {"error": e_does_not_exist.message}
+        except Exception as e:
+            error = {"error": e.message}
+
+    if error:
+        context = error
+    else:
+        context = {
+            'project': select_projects,
+            'subcategories': select_subcategory,
+            'categories': select_category,
+        }
 
     assets = {
         "js": [
