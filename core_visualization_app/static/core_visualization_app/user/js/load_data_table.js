@@ -36,7 +36,6 @@ var onClick = function(event){
             }
         }
         table = table.substring(0, table.length - 13); // one cell to remove at the end
-        console.log(table);
         table += '</thead></table></div>';
         $('#data_table').html(table);
         var plot = '';

@@ -1,4 +1,4 @@
-"""Visualization app user views
+""" Visualization app user views
 """
 import json
 
@@ -20,13 +20,15 @@ CQL_NAMESPACE = "http://siam.nist.gov/Database-Navigation-Ontology#"
 
 def index(request):
     """ Visualization app initial homepage
-    :param request:
-    :return:
+
+    Args:
+        request:
+
+    Returns:
 
     """
     try:
         # Set up the needed explore tree related objects to get the queries
-
         # get the active ontology
         active_ontology = query_ontology_api.get_active()
         # Get the active ontology's ID
@@ -99,10 +101,6 @@ def index(request):
                 "path": 'core_visualization_app/user/js/download_data_table.js',
                 "is_raw": False
             },
-            {
-                "path": 'core_visualization_app/user/js/update_configuration.js',
-                "is_raw": False
-            }
         ]
     }
     return render(request, "core_visualization_app/user/visualization.html",

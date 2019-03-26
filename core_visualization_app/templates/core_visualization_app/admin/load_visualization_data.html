@@ -1,0 +1,13 @@
+{% extends 'core_main_app/_render/admin/theme/tools/box.html' %}
+
+{% block box_title %}Load Visualization{% endblock %}
+
+{% block box_body %}
+    <button type="button" name="" id="build-visualization-data" class="btn btn-info">Load all data</button>
+    <div id="loading_background" style="visibility: hidden;">
+        {% include 'core_visualization_app/common/loading_background.html' %}
+    </div>
+{% endblock %}
+
+{% block box_footer %}
+{% endblock %}
