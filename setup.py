@@ -32,7 +32,7 @@ chdir(normpath(join(abspath(__file__), pardir)))
 
 setup(
     name="core_visualization_app",
-    version="1.0.0-alpha1",
+    version="1.0.0-beta1",
     description="Visualization app",
     long_description=long_desc,
     author="NIST IT Lab",
