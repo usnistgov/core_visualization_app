@@ -16,6 +16,7 @@ var onClick = function(event){
         removeElement("select-subcategory-form");
         removeElement("load-test-data");
         removeElement("selection-header");
+        removeElement("plot-example");
         var dataT = data.data_table_csv;
         var script = data.script;
         var div = data.div;

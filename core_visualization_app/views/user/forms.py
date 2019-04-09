@@ -8,7 +8,7 @@ from core_visualization_app.components.visualization_configuration import api as
 class SelectProjects(forms.Form):
     """Form to select projects to visualize
     """
-    projects = forms.MultipleChoiceField(label='Select projects:', required=True, widget=forms.CheckboxSelectMultiple())
+    projects = forms.MultipleChoiceField(label='Which project(s) would you like to explore the related data of?', required=True, widget=forms.CheckboxSelectMultiple())
 
     def __init__(self):
         super(SelectProjects, self).__init__()
@@ -18,7 +18,7 @@ class SelectTestCategory(forms.Form):
     """Form to select what Test Category to visualize
 
     """
-    categories = forms.ChoiceField(label='Select test category:', required=True, widget=forms.RadioSelect())
+    categories = forms.ChoiceField(label='Which kind of testing data are you interested in?', required=True, widget=forms.RadioSelect())
 
     def __init__(self):
         super(SelectTestCategory, self).__init__()
@@ -28,7 +28,7 @@ class SelectTestSubcategory(forms.Form):
     """Form to select what Test Subcategory to visualize
 
     """
-    subcategories = forms.ChoiceField(label='Select test subcategory:', required=True, widget=forms.RadioSelect())
+    subcategories = forms.ChoiceField(label='Which test results would you like to see?', required=True, widget=forms.RadioSelect())
 
     def __init__(self):
         super(SelectTestSubcategory, self).__init__()
