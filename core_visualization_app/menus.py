@@ -12,5 +12,5 @@ Menu.add_item(
 )
 
 Menu.add_item(
-    "advanced", MenuItem("Data Visualization", reverse("core_visualization_index"))
+    "main", MenuItem("Data Visualization", reverse("core_visualization_index"))
 )
