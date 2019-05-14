@@ -114,6 +114,15 @@ def load_test_data(request):
 
 
 def update_configuration(request):
+    """ When a user selects a new x_parameter or y_parameter, this ajax is called to process the request and
+    update the new axis
+
+    Args:
+        request:
+
+    Returns: Update the plot
+
+    """
     try:
         new_parameter = request.POST.get('new_parameter', None)
         parameter_type = request.POST.get('parameter_type', None)
@@ -145,6 +154,15 @@ def update_configuration(request):
 
 
 def update_custom_form(request):
+    """ Process a user request when he changes a custom parameter. That means a parameter that is not a x or y parameter.
+    For instance, changing the element whose chemical composition is displayed on a piechart.
+
+    Args:
+        request:
+
+    Returns:
+
+    """
     test_selected = visualization_selection_api.get_selected_test()
     plot = visualization_configuration_api.get_active_plot(test_selected.name)
 
@@ -173,6 +191,14 @@ def update_custom_form(request):
 
 
 def get_data_table_csv(data_table_list):
+    """ Convert a two dimensional list to a CSV table
+
+    Args:
+        data_table_list: two dimensional list
+
+    Returns: CSV file
+
+    """
     # Check if file already exists
     if path.isfile('./table.csv'):
         remove('./table.csv')
@@ -191,11 +217,29 @@ def get_data_table_csv(data_table_list):
 
 
 def download_test_data(request):
+    """ Download the CSV file
+
+    Args:
+        request:
+
+    Returns:
+
+    """
     data_table_csv = request.POST.get('data_table_csv', None)
     return get_file_http_response(data_table_csv, 'Data_table', 'text/csv', 'csv')
 
 
 def visualization_data(test_selected_tree, data_table_content, test_selected_name):
+    """ Launch the loading of the plot
+
+    Args:
+        test_selected_tree:
+        data_table_content:
+        test_selected_name:
+
+    Returns: html elements that are inserted in the template
+
+    """
     plots_operations.set_plots(test_selected_tree, test_selected_name)
     script, div = plots_operations.load_visualization(test_selected_name, data_table_content)
 
@@ -203,6 +247,14 @@ def visualization_data(test_selected_tree, data_table_content, test_selected_nam
 
 
 def update_selection_forms(request):
+    """
+
+    Args:
+        request:
+
+    Returns:
+
+    """
     if request.method == 'GET':
         test_selected = visualization_selection_api.get_selected_test()
         plot = visualization_configuration_api.get_active_plot(test_selected.name)

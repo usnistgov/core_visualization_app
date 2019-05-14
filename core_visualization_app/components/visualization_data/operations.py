@@ -12,14 +12,17 @@ from core_visualization_app.utils import query as query_utils
 
 
 def load_test_data(data_table_annotation, all_projects_list, template_id):
-    """ Load all visualization test data by querying the database and creates Python objects (DataLine)
+    """  Load all visualization test data by querying the database and creates Python objects (DataLine)
     by using the ontology annotation cql:visualization that contains all the queries and path. Syntax of the annotation
     is correlated with this method.
 
-    :param data_table_annotation: Dict corresponding to the ontology visualization tree of a single test type
-    :param all_projects_list: list of all the existing projects of the database
-    :param template_id: template_id
-    :return:
+    Args:
+        data_table_annotation: Dict corresponding to the ontology visualization tree of a single test type
+        all_projects_list: list of all the existing projects of the database
+        template_id: template_id
+
+    Returns:
+
     """
     # There is only one couple key/value in the initial dict.
     # The value content is a list. Only the first element is needed to load the data.
@@ -200,9 +203,12 @@ def load_test_data(data_table_annotation, all_projects_list, template_id):
 def get_data_content(test_name, selected_projects_name):
     """
 
-    :param test_name: Selected AM Test subcategory
-    :param selected_projects_name:
-    :return: csv_table which mis then embeded within the HTML
+    Args:
+        test_name:  Selected AM Test subcategory
+        selected_projects_name:
+
+    Returns: csv_table as a list which is then embeded within the HTML
+
     """
     parameters_list = []
 
@@ -218,5 +224,10 @@ def get_data_content(test_name, selected_projects_name):
             if param in data_line_dict.keys():
                 row[parameters_list.index(param)] = data_line_dict[param]
         data_table_list.append(row)
+
+    # Delete empty columns
+    data_table_list = zip(*data_table_list)
+    data_table_list = [x for x in data_table_list if any(x[1:])]
+    data_table_list = [list(row) for row in zip(*data_table_list)]
 
     return data_table_list

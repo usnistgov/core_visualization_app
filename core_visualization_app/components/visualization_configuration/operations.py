@@ -22,12 +22,15 @@ from core_visualization_app.utils import dict as dict_utils
 
 
 def load_all_dicts(data_table, plot):
-    """ Return a dict of each combination possible of xy with their
+    """   Return a dict of each combination possible of xy with their
     related data : {xaya: [{xa: value1x, ya:value1y}, {xa: value2x, ya: value2y},..], xayb: ...}
 
-    :param data_table:
-    :param plot:
-    :return:
+    Args:
+        data_table:
+        plot:
+
+    Returns:
+
     """
     xy_all_dicts = {}
 
@@ -122,7 +125,7 @@ def multi_barchart(xy_all_dicts, plot):
     if not x_range:
         return None
 
-    width = 200 + 200*len(x_range)
+    width = configure_plot_width(x_range, 200 + 200*len(x_range))
 
     p = figure(x_range=x_range, plot_height=600, plot_width=width, title='Nested bar chart - '+plot.test_name+' by '+active_x)
 
@@ -196,7 +199,7 @@ def scatter_graph(xy_all_dicts, plot):
     if not x_range:
         return None
 
-    width = 200*len(x_range)
+    width = configure_plot_width(x_range, 200 + 200*len(x_range))
 
     p = figure(plot_height=600, plot_width=width, x_range=x_range, title='Scatter graph - ' + plot.test_name + ' by ' + active_x)
 
@@ -268,7 +271,7 @@ def bar_chart(xy_all_dicts, plot):
 
     source = ColumnDataSource(data=dict(x_axis=x_axis, y_axis=y_axis))
 
-    width = 200*len(x_axis)
+    width = configure_plot_width(x_axis, 200 + 200 * len(x_axis))
 
     p = figure(x_range=x_axis, plot_height=600, plot_width=width, title='Bar chart - '+plot.test_name+': '+active_y+' by '+active_x)
 
@@ -387,8 +390,6 @@ def box_plot(xy_all_dicts, plot):
     for i in range(0, len(score)):
         if score[i]:
             if builds[i] not in cats:
-                print builds[i]
-                print len(builds[i])
                 if len(builds[i]) > max_len:
                     max_len = len(builds[i])
                 cats.append(builds[i])
@@ -406,7 +407,8 @@ def box_plot(xy_all_dicts, plot):
     lower = q1 - 1.5 * iqr
 
     groups_len = len(groups)
-    width = int(200*groups_len*truediv(max_len, 20))
+
+    width = configure_plot_width(groups, int(200*groups_len*truediv(max_len, 20)))
 
     p = figure(plot_height=600, plot_width=width, background_fill_color="#EFE8E2", title='Box plot - '+plot.test_name+': '+plot.active_y+' by '+plot.active_x,
                x_range=cats)
@@ -573,3 +575,20 @@ def set_plots(test_selected_tree, test_name):
             plot = visualization_config_api.set_plots(plot_name, default, x_parameters, y_parameters, test_name)
 
     return
+
+
+def configure_plot_width(x_range, width):
+    """ Define the plot width according to the number of elements that have to be on the plot
+
+    Args:
+        x_range:
+        width:
+
+    Returns:
+
+    """
+    if len(x_range) > 2:
+        width = width
+    else:
+        width = 600
+    return width
