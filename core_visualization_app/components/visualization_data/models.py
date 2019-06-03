@@ -58,8 +58,11 @@ class DataLine(Document):
     def is_line(doc_id):
         """ Return True if a DataLine exists that gets the given argument as doc_id
 
-        :param doc_id:
-        :return:
+        Args:
+            doc_id:
+
+        Returns:
+
         """
         doc_id = str(doc_id)
         if DataLine.objects.filter(doc_id=doc_id):

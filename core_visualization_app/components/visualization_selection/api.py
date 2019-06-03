@@ -17,9 +17,12 @@ def get_all_categories_names():
 def get_projects(navigation, template_id):
     """ Get all the existing projects from the database
 
-    :param navigation:
-    :param template_id:
-    :return: list of tuples. Each tuple is a project written twice to be consistent with form syntax
+    Args:
+        navigation:
+        template_id:
+
+    Returns:list of tuples. Each tuple is a project written twice to be consistent with form syntax
+
     """
     return Projects.get_projects(navigation, template_id)
 
@@ -112,10 +115,13 @@ def get_subcategories(category):
 def get_subcategories_tuples(categories, categories_tree):
     """ Get all the existing categories subclasses (ie. subcategories) from the active ontology as a list of tuples
 
-    :param categories (Build and powder only for now)
-    :param categories_tree (ordereddict of each category)
-    :return: list of list of tuples. Each tuple is a subclass of a category (ie. a subcategory) and a list gathers all
+    Args:
+        categories: Build and powder only for now
+        categories_tree: ordereddict of each category
+
+    Returns:  list of list of tuples. Each tuple is a subclass of a category (ie. a subcategory) and a list gathers all
     the subclasses of a single category. There are as many lists as categories
+
     """
     return Category.get_subcategories_tuples(categories, categories_tree)
 
@@ -125,8 +131,11 @@ def get_categories(active_ontology):
      Return also categories tree, a list of dict. Each dict contains the ontology annotation part related
      to the category which is at the same index within the category tuples.
 
-    :param active_ontology:
-    :return:
+    Args:
+        active_ontology:
+
+    Returns:
+
     """
     return Category.get_categories(active_ontology)
 

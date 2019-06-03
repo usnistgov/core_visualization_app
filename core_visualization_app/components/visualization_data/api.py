@@ -39,8 +39,11 @@ def update_line(test_type, project_id, doc_id, param, value):
 def is_line(doc_id):
     """ Return True if a DataLine exists that gets the given argument as doc_id
 
-    :param doc_id:
-    :return:
+    Args:
+        doc_id:
+
+    Returns:
+
     """
     return DataLine.is_line(doc_id)
 

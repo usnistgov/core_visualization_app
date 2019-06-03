@@ -4,11 +4,14 @@ CQL_NAMESPACE = "http://siam.nist.gov/Database-Navigation-Ontology#"
 
 
 def get_dict_value(dict_content, key):
-    """ Recursive method to get the value deep inside json tree
+    """  Recursive method to get the value deep inside json tree
 
-    :param dict_content: json tree
-    :param key: key related to the value
-    :return:
+    Args:
+        dict_content:  json tree
+        key:  key related to the value
+
+    Returns:
+
     """
     value = 0
     for k,v in dict_content.items():
@@ -20,11 +23,14 @@ def get_dict_value(dict_content, key):
 
 
 def get_dict_path_value(dict_content, path):
-    """ Recursive method to get the value inside json tree from a full path
+    """Recursive method to get the value inside json tree from a full path
 
-    :param dict_content: json tree
-    :param path:
-    :return:
+    Args:
+        dict_content:
+        path:
+
+    Returns:
+
     """
     path_list = path.split('.')
 
@@ -44,9 +50,12 @@ def get_dict_path_value(dict_content, path):
 def get_test_type_tree(category_tree, test_type_name):
     """ Recursive method to get the test selected tree inside a category tree
 
-    :param category_tree: category tree
-    :param test_type_name: test type name
-    :return: test type tree
+    Args:
+        category_tree: category tree
+        test_type_name: test type name
+
+    Returns: test type tree
+
     """
     owl_node_categories = CQL_NAMESPACE + test_type_name
 
@@ -97,9 +106,12 @@ def get_list_inside_dict(dict_path, dict_content):
 def get_dicts_inside_list_of_dict(list_path, list_of_dict):
     """
 
-    :param list_path: [a,b,c]
-    :param list_of_dict: [{a:{b:{c:value1},{a:{b:{c:value2}, ..]
-    :return: [{c:value1}, {c:value2},..]
+    Args:
+        list_path:  [a,b,c]
+        list_of_dict:  [{a:{b:{c:value1},{a:{b:{c:value2}, ..]
+
+    Returns: [{c:value1}, {c:value2},..]
+
     """
     while len(list_path) > 1:
         for dict_to_parse in list_of_dict:
@@ -110,27 +122,14 @@ def get_dicts_inside_list_of_dict(list_path, list_of_dict):
         return list_of_dict
 
 
-def get_index_from_list_of_dicts(check_list, dict_value):
-    """ Return the index of the check list element (which is a dict) that gets dict_value as a key
-
-    Args:
-        check_list:
-        dict_value:
-
-    Returns:
-
-    """
-    i = 0
-    while i<len(check_list):
-        if dict_value in check_list[i].values():
-            return i
-        i += 1
-
-
 def get_children_trees(tree):
     """
-    :param tree: Parent tree
-    :return: List of children trees
+
+    Args:
+        tree:  Parent tree
+
+    Returns: List of children trees
+
     """
     keys_list = []
     for key in tree.keys():
@@ -150,9 +149,13 @@ def get_children_trees(tree):
 def check_children(tree):
     """
 
-    :param tree: tree to check
-    :return: list of children trees if the original tree is a Parent. Otherwise return the original tree in a list of 1 elt
+    Args:
+        tree: tree to check
+
+    Returns:  list of children trees if the original tree is a Parent. Otherwise return the original tree in a list of 1 elt
+
     """
+
     new_tree = tree.values()[0]
     if 'children' in new_tree.keys():
         if new_tree['children']:

@@ -11,8 +11,11 @@ CQL_NAMESPACE = "http://siam.nist.gov/Database-Navigation-Ontology#"
 def get_category_tree(category_name):
     """ Get the parsed ontology tree related to the given category name
 
-    :param category_name
-    :return: category tree
+    Args:
+        category_name:
+
+    Returns: Category Tree
+
     """
     # get the active ontology
     active_ontology = query_ontology_api.get_active()
@@ -33,12 +36,14 @@ def get_category_tree(category_name):
 
 
 def get_subcategories_list(category_tree):
-    """ Get all the category tree subclasses (ie. subcategories)
+    """  Get all the category tree subclasses (ie. subcategories)
 
-    :param category_tree related to a single category
-    :return: list of subcategories names
+    Args:
+        category_tree: category tree related to a single category
+
+    Returns: list of subcategories names
+
     """
-
     subcategories_list = []
     for k, v in category_tree.items():
         if k == 'children':
@@ -62,9 +67,12 @@ def get_subcategories_list(category_tree):
 def get_subcategory_tree(test_selected_name, category_tree):
     """ Get the parsed ontology tree related to the given test selected name
 
-    :param test_selected_name
-    :param  category_tree
-    :return test selected tree
+    Args:
+        test_selected_name:
+        category_tree:
+
+    Returns: test selected tree
+
     """
     owl_node_categories = CQL_NAMESPACE + test_selected_name
     subcategory_tree = 0

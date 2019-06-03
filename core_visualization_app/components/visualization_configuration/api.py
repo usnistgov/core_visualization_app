@@ -1,7 +1,6 @@
 """
 Visualization configuration api
 """
-
 from core_visualization_app.components.visualization_configuration.models import Plot
 
 
@@ -26,8 +25,11 @@ def set_plots(plot_name, default, x_parameters, y_parameters, test_name):
 def get_active_plot(test_name):
     """ Return the only one active plot with the according test name
 
-    :param test_name:
-    :return:
+    Args:
+        test_name:
+
+    Returns:
+
     """
     return Plot.get_active_plot(test_name)
 

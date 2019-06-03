@@ -1,10 +1,6 @@
 """ Visualization app user views
 """
-import json
-
 from django.core.cache import caches
-from django.http.response import HttpResponse, HttpResponseBadRequest
-from rest_framework.status import HTTP_404_NOT_FOUND
 
 import core_explore_tree_app.components.query_ontology.api as query_ontology_api
 from core_explore_tree_app.components.navigation.api import create_navigation_tree_from_owl_file

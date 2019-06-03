@@ -9,8 +9,11 @@ from core_main_app.utils.rendering import admin_render
 def manage_visualization_data(request):
     """
 
-    :param request:
-    :return: view with buttons to  manage visualization data
+    Args:
+        request:
+
+    Returns:  view with buttons to  manage visualization data
+
     """
     assets = {
         "js": [

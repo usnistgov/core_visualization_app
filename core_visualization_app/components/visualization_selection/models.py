@@ -17,6 +17,7 @@ CQL_NAMESPACE = "http://siam.nist.gov/Database-Navigation-Ontology#"
 
 class Projects(Document):
     """ Data Structure to handle the selected projects
+
     """
     name = fields.StringField(blank=True)
     is_selected = fields.BooleanField(default=False)
@@ -93,9 +94,12 @@ class Projects(Document):
     def get_projects(navigation, template_id):
         """ Get all the existing projects from the database
 
-        :param navigation:
-        :param template_id:
-        :return: list of tuples. Each tuple is a project written twice to be consistent with form syntax
+        Args:
+            navigation:
+            template_id:
+
+        Returns: list of tuples. Each tuple is a project written twice to be consistent with form syntax
+
         """
         # Get the filter related to the projects
         owl_node_project = CQL_NAMESPACE + 'AMProject'
@@ -142,7 +146,7 @@ class Projects(Document):
 
 
 class Category(Document):
-    """Data Structure to handle the selected Category
+    """ Data Structure to handle the selected Category
 
     """
     name = fields.StringField(blank=True)
@@ -231,11 +235,13 @@ class Category(Document):
     @staticmethod
     def get_categories(active_ontology):
         """ Return category tuples, a list of tuples. Each tuple is a category.
-         Return also categories tree, a list of dict. Each dict contains the ontology annotation part related
-         to the category which is at the same index within the category tuples.
+         Return also categories tree, a list of dict. Each dict contains the ontology
 
-        :param active_ontology:
-        :return:
+        Args:
+            active_ontology:
+
+        Returns:
+
         """
         tree = ontology_parser.parse_ontology(active_ontology.content)
         owl_node_categories = CQL_NAMESPACE + 'AMTests'
@@ -259,10 +265,13 @@ class Category(Document):
     def get_subcategories_tuples(categories, categories_tree):
         """ Get all the existing categories subclasses (ie. subcategories) from the active ontology as a list of tuples
 
-        :param categories (Build and powder only for now)
-        :param categories_tree (ordereddict of each category)
-        :return: list of list of tuples. Each tuple is a subclass of a category (ie. a subcategory) and a list gathers all
+        Args:
+            categories: Build and powder only for now
+            categories_tree: categories
+
+        Returns:  list of list of tuples. Each tuple is a subclass of a category (ie. a subcategory) and a list gathers all
         the subclasses of a single category. There are as many lists as categories
+
         """
         subcategories_tuples_list = ()
         i = 0
@@ -306,7 +315,7 @@ class Category(Document):
 
 
 class SelectedTest(Document):
-    """Data Structure to handle the selected test (ie. subcategory)
+    """ Data Structure to handle the selected test (ie. subcategory)
 
     """
     name = fields.StringField(blank=True)

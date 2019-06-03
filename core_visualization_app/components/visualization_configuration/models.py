@@ -69,8 +69,11 @@ class Plot(Document):
     def get_active_plot(test_name):
         """ Return the only one active plot with the according test name
 
-        :param test_name:
-        :return:
+        Args:
+            test_name:
+
+        Returns:
+
         """
         return Plot.objects.get(test_name=test_name, default_plot=True)
 
