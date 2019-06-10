@@ -1,12 +1,14 @@
 """ Visualization app user views
 """
+
 from django.core.cache import caches
 
 import core_explore_tree_app.components.query_ontology.api as query_ontology_api
 from core_explore_tree_app.components.navigation.api import create_navigation_tree_from_owl_file
 from core_main_app.commons import exceptions
 from core_main_app.utils.rendering import render
-from core_visualization_app.components.visualization_selection import api
+from core_visualization_app.components.projects import api as projects_api
+from core_visualization_app.components.category import api as category_api
 from core_visualization_app.views.user.forms import SelectProjects, SelectTestCategory, SelectTestSubcategory
 
 navigation_cache = caches['navigation']
@@ -47,21 +49,22 @@ def index(request):
                 navigation = create_navigation_tree_from_owl_file(active_ontology.content)
                 navigation_cache.set(nav_key, navigation)  # navigation_cache.set(template_id, navigation)
 
-            # Delete all projects from a previous instance
-            api.delete_all_projects()
+            # Delete all projects and category objects from a previous instance
+            projects_api.delete_all_projects()
+            category_api.delete_all_categories()
 
             # Get the existing projects from the navigation
-            projects_tuples = api.get_projects(navigation, template_id)
+            projects_tuples = projects_api.get_projects(navigation, template_id)
             select_projects = SelectProjects()
             select_projects.fields['projects'].choices = projects_tuples
 
             # Get the existing categories from the ontology
-            categories_tuples, categories_tree = api.get_categories(active_ontology)
+            categories_tuples, categories_tree = category_api.get_categories(active_ontology)
             select_category = SelectTestCategory()
             select_category.fields['categories'].choices = categories_tuples
 
             # Get the existing subcategories from the ontology
-            subcategories_tuples_list = api.get_subcategories_tuples(categories_tuples, categories_tree)
+            subcategories_tuples_list = category_api.get_subcategories_tuples(categories_tuples, categories_tree)
             select_subcategory_tuples = []
 
             for i in range(1, len(subcategories_tuples_list), 2):

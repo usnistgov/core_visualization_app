@@ -11,7 +11,7 @@ import core_explore_tree_app.components.query_ontology.api as query_ontology_api
 import core_explore_tree_app.parser.parser as ontology_parser
 import core_visualization_app.components.visualization_data.api as visualization_data_api
 import core_visualization_app.components.visualization_data.operations as visualization_data_operations
-import core_visualization_app.components.visualization_selection.api as visualization_selection_api
+import core_visualization_app.components.projects.api as projects_api
 from core_explore_tree_app.components.navigation.api import create_navigation_tree_from_owl_file
 from core_visualization_app.utils import dict as visualization_utils
 
@@ -38,10 +38,10 @@ def build_visualization_data():
         navigation_cache.set(nav_key, navigation)  # navigation_cache.set(template_id, navigation)
 
     # Reset the projects
-    visualization_selection_api.delete_all_projects()
+    projects_api.delete_all_projects()
 
     # Get the existing projects from the navigation
-    all_projects_list = visualization_selection_api.get_all_projects_list(navigation, template_id)
+    all_projects_list =projects_api.get_all_projects_list(navigation, template_id)
 
     # Get the AM Tests branch from the all ontology tree
     all_tree = ontology_parser.parse_ontology(active_ontology.content)

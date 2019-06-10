@@ -17,7 +17,7 @@ from bokeh.transform import dodge
 import core_explore_tree_app.components.data.query as query_database_api
 import core_explore_tree_app.components.query_ontology.api as query_ontology_api
 from core_visualization_app.components.visualization_configuration import api as visualization_config_api
-from core_visualization_app.components.visualization_selection import api as selection_api
+import core_visualization_app.components.projects.api as projects_api
 from core_visualization_app.utils import dict as dict_utils
 
 
@@ -547,7 +547,7 @@ def set_plots(test_selected_tree, test_name):
     """
     visualization_annotation = json.loads(test_selected_tree['annotations']['visualization'])
     plots_annotation = visualization_annotation[1]['data']
-    projects = selection_api.get_selected_projects_name()
+    projects = projects_api.get_selected_projects_name()
     project_filter = []
 
     query = visualization_annotation[0]['project']

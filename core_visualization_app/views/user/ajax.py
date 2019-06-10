@@ -12,8 +12,11 @@ from core_main_app.utils.file import get_file_http_response
 from core_visualization_app.components.visualization_configuration import api as visualization_configuration_api
 from core_visualization_app.components.visualization_configuration import operations as plots_operations
 from core_visualization_app.components.visualization_data import operations as visualization_data_operations
-from core_visualization_app.components.visualization_selection import api as visualization_selection_api
-from core_visualization_app.components.visualization_selection import operations as selection_operations
+from core_visualization_app.components.projects import api as projects_api
+from core_visualization_app.components.category import api as category_api
+from core_visualization_app.components.selected_test import api as selected_test_api
+
+from core_visualization_app.components.category import operations as category_operations
 from core_visualization_app.utils import dict as utils_dict
 from core_visualization_app.views.user.forms import SelectXParameter, SelectYParameter, SelectCustomizedParameter
 
@@ -28,8 +31,8 @@ def get_selected_project(request):
     """
     try:
         project_name = request.POST.get('project', None)
-        project = visualization_selection_api.get_project_by_name(project_name)
-        visualization_selection_api.toggle_project_selection(project.name, project.is_selected)
+        project = projects_api.get_project_by_name(project_name)
+        projects_api.toggle_project_selection(project.name, project.is_selected)
         return HttpResponse(project.name)
     except Exception, e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
@@ -45,8 +48,8 @@ def update_selected_category(request):
     """
     try:
         category_name = request.POST.get('category', None)
-        category = visualization_selection_api.toggle_category_selection(category_name)
-        subcategories = visualization_selection_api.get_subcategories(category)
+        category = category_api.toggle_category_selection(category_name)
+        subcategories = category_api.get_subcategories(category)
         return HttpResponse(json.dumps(subcategories), 'application/javascript')
     except Exception, e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
@@ -63,8 +66,8 @@ def update_selected_subcategory(request):
     """
     try:
         selected_name = request.POST.get('subcategory', None)
-        selected_test = visualization_selection_api.create_selected(selected_name)
-        visualization_selection_api.toggle_test_selection(selected_test.name)
+        selected_test = selected_test_api.create_selected(selected_name)
+        selected_test_api.toggle_test_selection(selected_test.name)
         return HttpResponse('application/javascript')
     except Exception, e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
@@ -79,15 +82,13 @@ def load_test_data(request):
     Returns:
     """
     try:
-        test_selected = visualization_selection_api.get_selected_test()
-        selected_projects_name = visualization_selection_api.get_selected_projects_name()
+        test_selected = selected_test_api.get_selected_test()
+        selected_projects_name = projects_api.get_selected_projects_name()
 
-        category_name = visualization_selection_api.get_selected_category_name()
-        category_tree = selection_operations.get_category_tree(category_name)
+        category_name = category_api.get_selected_category_name()
+        category_tree = category_operations.get_category_tree(category_name)
         test_selected_tree = utils_dict.get_test_type_tree(category_tree, test_selected.name)
-
         data_table_content = visualization_data_operations.get_data_content(test_selected.name, selected_projects_name)
-
         data_table_csv = get_data_table_csv(data_table_content)
 
         script, div = visualization_data(test_selected_tree, data_table_content, test_selected.name)
@@ -127,7 +128,7 @@ def update_configuration(request):
         new_parameter = request.POST.get('new_parameter', None)
         parameter_type = request.POST.get('parameter_type', None)
 
-        test_selected = visualization_selection_api.get_selected_test()
+        test_selected = selected_test_api.get_selected_test()
         plot = visualization_configuration_api.get_active_plot(test_selected.name)
         x_parameters = visualization_configuration_api.get_x_parameters(plot)
         y_parameters = visualization_configuration_api.get_y_parameters(plot)
@@ -163,7 +164,7 @@ def update_custom_form(request):
     Returns:
 
     """
-    test_selected = visualization_selection_api.get_selected_test()
+    test_selected = selected_test_api.get_selected_test()
     plot = visualization_configuration_api.get_active_plot(test_selected.name)
 
     if visualization_configuration_api.has_custom_param(plot):
@@ -256,7 +257,7 @@ def update_selection_forms(request):
 
     """
     if request.method == 'GET':
-        test_selected = visualization_selection_api.get_selected_test()
+        test_selected = selected_test_api.get_selected_test()
         plot = visualization_configuration_api.get_active_plot(test_selected.name)
         context_params = {}
 

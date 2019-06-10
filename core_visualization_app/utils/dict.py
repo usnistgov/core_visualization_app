@@ -155,7 +155,6 @@ def check_children(tree):
     Returns:  list of children trees if the original tree is a Parent. Otherwise return the original tree in a list of 1 elt
 
     """
-
     new_tree = tree.values()[0]
     if 'children' in new_tree.keys():
         if new_tree['children']:

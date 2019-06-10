@@ -37,13 +37,24 @@ class TestGetTestTypeTree(TestCase):
 
     def test_get_test_type_tree_valid(self):
         # Arrange
-        all_tree_file = open(join(RESOURCES_PATH, 'test_type_all_tree.txt'), "r")
-        all_tree = OrderedDict(all_tree_file.read())
+        all_tree = {'annotations': {}, 'children': OrderedDict([
+            ('http://siam.nist.gov/Database-Navigation-Ontology#BulkDensity',
+             {'annotations': {'filter': '{ "dict_content.amTestDB.amTest.partTest.testType": "BULKDENSITY" }',
+              'visualization': '["title": "Data table"}]'}}),
+
+            ('http://siam.nist.gov/Database-Navigation-Ontology#GrainSize',
+             {'annotations': {'filter': '{ "dict_content.amTestDB.amTest.partTest.testType": "GRAIN" }',
+                              'visualization': '[{"title": "Data table"}]'}}),
+
+            ('http://siam.nist.gov/Database-Navigation-Ontology#Tensile',
+             {'annotations': {'filter': '{ "dict_content.amTestDB.amTest.partTest.testType": "TENSILE" }',
+                              'visualization': '[{"title": "Data table"}]'}})
+            ])}
         test_type_name = 'Tensile'
         # Act
         test_type_tree = dict.get_test_type_tree(all_tree, test_type_name)
-        expected_result_file = open(join(RESOURCES_PATH, 'test_type_category_tree.txt'), "r")
-        expected_result = OrderedDict(expected_result_file.read())
+        expected_result = {'annotations': {'filter': '{ "dict_content.amTestDB.amTest.partTest.testType": "TENSILE" }',
+                                           'visualization': '[{"title": "Data table"}]'}}
         # Assert
         self.assertTrue(test_type_tree == expected_result)
 
@@ -53,17 +64,29 @@ class TestGetListInsideDict(TestCase):
     def test_get_list_inside_dict_valid_multi(self):
         # Arrange
         dict_path = 'dict_content.amTestDB.amTest.partTest.testResults.chemistry.constituent.element'
-        dict_content = {u'amTestDB': {u'amTest': {u'partTest': {u'testResults': {u'chemistry': {u'constituent': [{u'element': u'Oxygen'}, {u'element': u'Carbon'}, {u'element': u'Nitrogen'}, {u'element': u'Sulfur'}, {u'element': u'Manganese'}, {u'element': u'Silicon'}, {u'element': u'Phosphorus'}, {u'element': u'Chromium'}, {u'element': u'Molybdenum'}, {u'element': u'Niobium'}, {u'element': u'Tantalum'}, {u'element': u'Cobalt'}, {u'element': u'Titanium'}, {u'element': u'Aluminum'}, {u'element': u'Iron'}]}}}}}}
+        dict_content = {u'amTestDB': {u'amTest': {u'partTest': {u'testResults': {u'chemistry':
+                        {u'constituent': [{u'element': u'Oxygen'}, {u'element': u'Carbon'}, {u'element': u'Nitrogen'},
+                         {u'element': u'Sulfur'}, {u'element': u'Manganese'}, {u'element': u'Silicon'},
+                          {u'element': u'Phosphorus'}, {u'element': u'Chromium'}, {u'element': u'Molybdenum'},
+                          {u'element': u'Niobium'}, {u'element': u'Tantalum'}, {u'element': u'Cobalt'},
+                          {u'element': u'Titanium'}, {u'element': u'Aluminum'}, {u'element': u'Iron'}]}}}}}}
         # Act
         list_inside_dict = dict.get_list_inside_dict(dict_path, dict_content)
-        result = [{u'element': u'Oxygen'}, {u'element': u'Carbon'}, {u'element': u'Nitrogen'}, {u'element': u'Sulfur'}, {u'element': u'Manganese'}, {u'element': u'Silicon'}, {u'element': u'Phosphorus'}, {u'element': u'Chromium'}, {u'element': u'Molybdenum'}, {u'element': u'Niobium'}, {u'element': u'Tantalum'}, {u'element': u'Cobalt'}, {u'element': u'Titanium'}, {u'element': u'Aluminum'}, {u'element': u'Iron'}]
+        result = [{u'element': u'Oxygen'}, {u'element': u'Carbon'}, {u'element': u'Nitrogen'}, {u'element': u'Sulfur'},
+                  {u'element': u'Manganese'}, {u'element': u'Silicon'}, {u'element': u'Phosphorus'},
+                  {u'element': u'Chromium'}, {u'element': u'Molybdenum'}, {u'element': u'Niobium'},
+                  {u'element': u'Tantalum'}, {u'element': u'Cobalt'}, {u'element': u'Titanium'},
+                  {u'element': u'Aluminum'}, {u'element': u'Iron'}]
         # Assert
         self.assertTrue(list_inside_dict == result)
 
     def test_get_list_inside_dict_valid_simple(self):
         # Arrange
         dict_path = 'dict_content.amTestDB.amTest.partTest.testResults.chemistry.constituent.element'
-        dict_content = {u'amTestDB': {u'amTest': {u'partTest': {u'testResults': {u'chemistry': {u'constituent': [{u'element': u'Iron'}]}}}}}}
+        dict_content = {u'amTestDB':
+                            {u'amTest':
+                                 {u'partTest':
+                                      {u'testResults': {u'chemistry': {u'constituent': [{u'element': u'Iron'}]}}}}}}
         # Act
         list_inside_dict = dict.get_list_inside_dict(dict_path, dict_content)
         result = [{u'element': u'Iron'}]
@@ -96,25 +119,56 @@ class TestGetChildrenTrees(TestCase):
 
     def test_get_children_trees_valid(self):
         # Arrange
-        tree_file = open(join(RESOURCES_PATH, 'test_children_tree.txt'), "r")
-        tree = OrderedDict(tree_file)
+        tree = OrderedDict([('http://siam.nist.gov/Database-Navigation-Ontology#ChemicalComposition',
+                {'annotations': {
+                    'filter': '{  "dict_content.amTestDB.amTest.powderTest.testType": "CHEMISTRY-XPS" }',
+                    'visualization': "[{'title': 'Data table'}, 'children': OrderedDict()]"}}),
+
+                ('http://siam.nist.gov/Database-Navigation-Ontology#Microstructure',
+                {'annotations': {
+                    'filter': '{  "dict_content.amTestDB.amTest.powderTest.testType": "MICROSTRUCTURE-XRD" }',
+                    'visualization': "[{'title': 'Data table'}, 'children': OrderedDict()]"}}),
+
+                ('http://siam.nist.gov/Database-Navigation-Ontology#ParticleSize',
+                {'annotations': {
+                    'filter': '{  "dict_content.amTestDB.amTest.powderTest.testType": "PARTICLESIZE-PSD" }',
+                    'visualization': "[{'title': 'Data table'}, 'children': OrderedDict()]"}})])
         # Act
         children_trees = dict.get_children_trees(tree)
-        expected_result_file = open(join(RESOURCES_PATH, 'test_children_result.txt'), "r")
-        expected_result = list(expected_result_file.read())
+        expected_result = [{'ChemicalComposition': {'annotations': {
+            'filter': '{  "dict_content.amTestDB.amTest.powderTest.testType": "CHEMISTRY-XPS" }',
+            'visualization': "[{'title': 'Data table'}, 'children': OrderedDict()]"}}},
+
+            {'Microstructure': {'annotations': {
+                'filter': '{  "dict_content.amTestDB.amTest.powderTest.testType": "MICROSTRUCTURE-XRD" }',
+                'visualization': "[{'title': 'Data table'}, 'children': OrderedDict()]"}}},
+
+            {'ParticleSize': {'annotations': {
+                'filter': '{  "dict_content.amTestDB.amTest.powderTest.testType": "PARTICLESIZE-PSD" }',
+                'visualization': "[{'title': 'Data table'}, 'children': OrderedDict()]"}}}]
         # Assert
         self.assertTrue(children_trees == expected_result)
 
 
 class TestCheckChildren(TestCase):
 
-    def test_check_children_valid(self):
+    def test_check_children_No_Children(self):
         # Arrange
-        tree_file = open(join(RESOURCES_PATH, 'test_check_children.txt'), "r")
-        tree = OrderedDict(tree_file.read())
+        tree = {'NoChildren': {'Imbricatedkey': 'AMMD'}}
         # Act
-        expected_result_file = open(join(RESOURCES_PATH, 'test_check_children_result.txt'), "r")
-        expected_result = list(expected_result_file.read())
+        expected_result = [{'NoChildren': {'Imbricatedkey': 'AMMD'}}]
+        # Assert
+        self.assertTrue(dict.check_children(tree) == expected_result)
+
+    def test_check_children_With_Children(self):
+        # Arrange
+        tree = {'ImaParent': {
+            'children': {
+                'http://siam.nist.gov/Database-Navigation-Ontology#Child': {'ToReturn': 'a'},
+                'http://siam.nist.gov/Database-Navigation-Ontology#OtherChild': {'ToReturn': 'b'}},
+            'NotChild': {'DoNot': 'Return'}}}
+        # Act
+        expected_result = [{'OtherChild': {'ToReturn': 'b'}}, {'Child': {'ToReturn': 'a'}}]
         # Assert
         self.assertTrue(dict.check_children(tree) == expected_result)
 
