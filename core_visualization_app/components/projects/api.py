@@ -28,7 +28,7 @@ def get_all_projects_list(navigation, template_id):
     Returns:
 
     """
-    projects_id_tuples = Projects.get_projects(navigation, template_id)
+    projects_id_tuples = get_projects(navigation, template_id)
     all_projects_list = []
     for project_tuple in projects_id_tuples:
         all_projects_list.append(project_tuple[0])
@@ -117,3 +117,4 @@ def get_selected_projects_name():
 
     """
     return Projects.get_selected_projects_name()
+

@@ -3,7 +3,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import json
-
+import logging
 from celery import shared_task
 from django.core.cache import caches
 
@@ -16,12 +16,14 @@ from core_explore_tree_app.components.navigation.api import create_navigation_tr
 from core_visualization_app.utils import dict as visualization_utils
 
 CQL_NAMESPACE = "http://siam.nist.gov/Database-Navigation-Ontology#"
+logger = logging.getLogger(__name__)
 
 
 @shared_task
 def build_visualization_data():
     """ Build data table object
     """
+    logger.info("START load visualization data")
     navigation_cache = caches['navigation']
 
     # get the active ontology
@@ -41,7 +43,7 @@ def build_visualization_data():
     projects_api.delete_all_projects()
 
     # Get the existing projects from the navigation
-    all_projects_list =projects_api.get_all_projects_list(navigation, template_id)
+    all_projects_list = projects_api.get_all_projects_list(navigation, template_id)
 
     # Get the AM Tests branch from the all ontology tree
     all_tree = ontology_parser.parse_ontology(active_ontology.content)
@@ -72,3 +74,5 @@ def build_visualization_data():
     # Create all DataLine objects
     for data_table_annotation in data_table_annotations:
         visualization_data_operations.load_test_data(data_table_annotation, all_projects_list, template_id)
+
+    logger.info("FINISH load visualization data")
