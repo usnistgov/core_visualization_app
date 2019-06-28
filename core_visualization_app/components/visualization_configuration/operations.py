@@ -70,6 +70,8 @@ def load_visualization(test_name, data_table=None):
         return None, None
 
     if not visualization_config_api.has_xy_values(plot):
+        if not data_table:
+            return None, None
         xy_all_dicts = load_all_dicts(data_table, plot)
         plot = visualization_config_api.update_plot_xy_values(plot.plot_name, plot.test_name, xy_all_dicts)
 
