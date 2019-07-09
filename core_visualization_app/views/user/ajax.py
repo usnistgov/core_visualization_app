@@ -34,7 +34,7 @@ def get_selected_project(request):
         project = projects_api.get_project_by_name(project_name)
         projects_api.toggle_project_selection(project.name, project.is_selected)
         return HttpResponse(project.name)
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
 
@@ -51,7 +51,7 @@ def update_selected_category(request):
         category = category_api.toggle_category_selection(category_name)
         subcategories = category_api.get_subcategories(category)
         return HttpResponse(json.dumps(subcategories), 'application/javascript')
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
 
@@ -69,7 +69,7 @@ def update_selected_subcategory(request):
         selected_test = selected_test_api.create_selected(selected_name)
         selected_test_api.toggle_test_selection(selected_test.name)
         return HttpResponse('application/javascript')
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
 
@@ -110,7 +110,7 @@ def load_test_data(request):
 
         return HttpResponse(json.dumps(data), content_type='application/json')
 
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
 
@@ -150,7 +150,7 @@ def update_configuration(request):
 
         return HttpResponse(json.dumps(data), content_type='application/json')
 
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest(e.message, content_type='application/javascript')
 
 

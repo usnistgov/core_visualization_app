@@ -6,11 +6,14 @@ import core_visualization_app.components.visualization_data.api as visualization
 from core_visualization_app.utils import dict as visualization_utils
 from core_visualization_app.utils import parser as utils_parser
 
+import logging
 import json
 
 from core_main_app.system import api as system_api
 from core_main_app.components.data.models import Data
 from core_visualization_app.utils import dict as dict_utils
+
+logger = logging.getLogger(__name__)
 
 
 def load_test_data(data_table_annotation, all_projects_list, template_id):
@@ -332,8 +335,8 @@ def execute_link_query(template_id, filters, projection, path):
             # Loads filter and projection
             json_filter = json.loads(_filter)
             json_projection = json.loads(projection)
-        except Exception, e:
-            print e.message
+        except Exception as e:
+            logger.error(e.message)
 
         filter_result = Data.execute_query(json_filter)
 
