@@ -1,7 +1,6 @@
 """
 Operations on visualization_configuration objects
 """
-
 import json
 from math import pi
 from operator import truediv
@@ -148,7 +147,7 @@ def multi_barchart(xy_all_dicts, plot):
                     classification[couple[active_x]] = [float(couple[y_parameters[i]])]
         color = all_colors[i]
 
-        for k, v in classification.items():
+        for k, v in list(classification.items()):
             classification[k] = truediv(sum(classification[k]), len(classification[k]))
             data['x_range'].append(k)
             data['y_data'].append(classification[k])
@@ -245,8 +244,8 @@ def bar_chart(xy_all_dicts, plot):
     if not xy_dict:
         return None
 
-    x_data= []
-    y_data= []
+    x_data = []
+    y_data = []
 
     for couple in xy_dict:
         x_data.append(couple[active_x])
@@ -267,9 +266,9 @@ def bar_chart(xy_all_dicts, plot):
                 x_groups[x_data[i]] += float(y_data[i])
                 counter[x_data[i]] += 1
 
-    for k, v in x_groups.items():
+    for k, v in list(x_groups.items()):
         x_axis.append(k)
-        y_axis.append(v / counter[k])
+        y_axis.append(v/counter[k])
 
     source = ColumnDataSource(data=dict(x_axis=x_axis, y_axis=y_axis))
 
@@ -335,7 +334,7 @@ def pie_chart(xy_all_dicts, plot, x_value=None):
         return None
 
     data = pandas.Series(x).reset_index(name='value').rename(columns={'index': 'number'})
-    data['angle'] = data['value'] / data['value'].sum() * 2 * pi
+    data['angle'] = data['value']/data['value'].sum() * 2 * pi
     data['color'] = ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd',
                      '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d',
                      '#17becf', '#9edae5'][:len(x)]
@@ -527,7 +526,7 @@ def get_y_parameters(path, template_id, project_filter, query_filter):
             if list_of_dicts_param:
                 for dict_param in list_of_dicts_param:
                     param_name = path.split('.')[-1]
-                    if param_name in dict_param.keys():
+                    if param_name in list(dict_param.keys()):
                         if dict_param[param_name] not in y_parameters:
                             if isinstance(dict_param[param_name], int):
                                 if str(dict_param[param_name]) not in y_parameters:
@@ -563,7 +562,7 @@ def set_plots(test_selected_tree, test_name):
         default = False
         plot_name, x_parameters, y_parameters = '', [], []  # init
 
-        for k, v in plot_annotation.items():
+        for k, v in list(plot_annotation.items()):
             if k == 'default':
                 default = True
             if k == 'Plot':

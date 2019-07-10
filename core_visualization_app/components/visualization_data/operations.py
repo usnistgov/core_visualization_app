@@ -32,8 +32,8 @@ def load_test_data(data_table_annotation, all_projects_list, template_id):
     # There is only one couple key/value in the initial dict.
     # The value content is a list. Only the first element is needed to load the data.
     # This comes from the ontology so it cannot be empty
-    test_type = data_table_annotation.keys()[0]
-    visualization_annotation = data_table_annotation.values()[0][0]
+    test_type = list(data_table_annotation.keys())[0]
+    visualization_annotation = list(data_table_annotation.values())[0][0]
 
     # (list of dicts, 1 dict = 1 parameter)
     data = visualization_annotation['data']
@@ -153,7 +153,7 @@ def get_check_path_value(link_parameter, projection, template_id, link_filter, p
             elt = json.loads(elt)
             if link_parameter['link_query'].split('.')[-1] in elt:
                 if elt[link_parameter['link_query'].split('.')[-1]] == dict_value:
-                    for k, v in elt.items():
+                    for k, v in list(elt.items()):
                         if k == link_parameter['path'].split('.')[-1]:
                             value = v
     else:
@@ -250,7 +250,7 @@ def get_dict_link_value(link_parameter, value, query,projection, template_id):
                         elt = json.loads(elt)
                         if link_parameter['sub_query']['query_path'].split('.')[-1] in elt:
                             if elt[link_parameter['sub_query']['query_path'].split('.')[-1]] == value:
-                                for k, v in elt.items():
+                                for k, v in list(elt.items()):
                                     if k == parameter_path.split('.')[-1]:
                                         dict_link_value = v
                 else:
@@ -287,7 +287,7 @@ def get_data_content(test_name, selected_projects_name):
     parameters_list = []
 
     for data_line_dict in visualization_data_api.get_lines(test_name, selected_projects_name):
-        for param in data_line_dict.keys():
+        for param in list(data_line_dict.keys()):
             if param not in parameters_list:
                 parameters_list.append(param)
 
@@ -295,12 +295,12 @@ def get_data_content(test_name, selected_projects_name):
     for data_line_dict in visualization_data_api.get_lines(test_name, selected_projects_name):
         row = [''] * len(parameters_list)
         for param in parameters_list:
-            if param in data_line_dict.keys():
+            if param in list(data_line_dict.keys()):
                 row[parameters_list.index(param)] = data_line_dict[param]
         data_table_list.append(row)
 
     # Delete empty columns
-    data_table_list = zip(*data_table_list)
+    data_table_list = list(zip(*data_table_list))
     data_table_list = [x for x in data_table_list if any(x[1:])]
     data_table_list = [list(row) for row in zip(*data_table_list)]
 
@@ -336,7 +336,7 @@ def execute_link_query(template_id, filters, projection, path):
             json_filter = json.loads(_filter)
             json_projection = json.loads(projection)
         except Exception as e:
-            logger.error(e.message)
+            logger.error(str(e))
 
         filter_result = Data.execute_query(json_filter)
 

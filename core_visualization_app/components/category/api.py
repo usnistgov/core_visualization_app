@@ -77,12 +77,12 @@ def get_categories(active_ontology):
     categories_tree = []
     categories_tuples = []
 
-    for ontology_key, ontology_value in tree.items():
+    for ontology_key, ontology_value in list(tree.items()):
         if ontology_key != owl_node_categories:
             continue
-        for sub_dict_key, sub_dict_value in ontology_value.items():
+        for sub_dict_key, sub_dict_value in list(ontology_value.items()):
             if sub_dict_key == 'children':
-                for category_path, category_tree in sub_dict_value.items():
+                for category_path, category_tree in list(sub_dict_value.items()):
                     category = category_path.split(CQL_NAMESPACE)[1]
                     Category.create_category(category)
                     categories_tuples.append((category, category))

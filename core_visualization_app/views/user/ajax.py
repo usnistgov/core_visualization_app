@@ -35,7 +35,7 @@ def get_selected_project(request):
         projects_api.toggle_project_selection(project.name, project.is_selected)
         return HttpResponse(project.name)
     except Exception as e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return HttpResponseBadRequest(str(e), content_type='application/javascript')
 
 
 def update_selected_category(request):
@@ -52,7 +52,7 @@ def update_selected_category(request):
         subcategories = category_api.get_subcategories(category)
         return HttpResponse(json.dumps(subcategories), 'application/javascript')
     except Exception as e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return HttpResponseBadRequest(str(e), content_type='application/javascript')
 
 
 def update_selected_subcategory(request):
@@ -70,7 +70,7 @@ def update_selected_subcategory(request):
         selected_test_api.toggle_test_selection(selected_test.name)
         return HttpResponse('application/javascript')
     except Exception as e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return HttpResponseBadRequest(str(e), content_type='application/javascript')
 
 
 def load_test_data(request):
@@ -111,7 +111,7 @@ def load_test_data(request):
         return HttpResponse(json.dumps(data), content_type='application/json')
 
     except Exception as e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return HttpResponseBadRequest(str(e), content_type='application/javascript')
 
 
 def update_configuration(request):
@@ -151,7 +151,7 @@ def update_configuration(request):
         return HttpResponse(json.dumps(data), content_type='application/json')
 
     except Exception as e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        return HttpResponseBadRequest(str(e), content_type='application/javascript')
 
 
 def update_custom_form(request):
@@ -205,7 +205,7 @@ def get_data_table_csv(data_table_list):
         remove('./table.csv')
 
     # Create table
-    with open('table' + '.csv', 'wb') as table:
+    with open('table' + '.csv', 'w') as table:
         file_writer = csv.writer(table, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         for row in data_table_list:
             file_writer.writerow(row)

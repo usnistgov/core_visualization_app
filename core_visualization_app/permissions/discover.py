@@ -27,4 +27,4 @@ def init_permissions():
         default_group.permissions.add(visualization_access_perm)
 
     except Exception as e:
-        logger.error(e.message)
+        logger.error(str(e))

@@ -1,7 +1,5 @@
 """ Visualization tasks
 """
-from __future__ import absolute_import, unicode_literals
-
 import json
 import logging
 from celery import shared_task
@@ -29,7 +27,7 @@ def build_visualization_data():
     # get the active ontology
     active_ontology = query_ontology_api.get_active()
     template_id = active_ontology.template.id
-    nav_key = active_ontology.id
+    nav_key = str(active_ontology.id)
 
     # get the navigation from the cache
     if nav_key in navigation_cache:  # if template_id in navigation_cache:
@@ -57,7 +55,7 @@ def build_visualization_data():
 
     # Load all the test types trees within the data table annotations list
     for category_tree in category_trees:
-        test_type_trees = visualization_utils.get_children_trees(category_tree.values()[0])
+        test_type_trees = visualization_utils.get_children_trees(list(category_tree.values())[0])
         for test_type_tree in test_type_trees:
             check_tree = visualization_utils.check_children(test_type_tree)
             for tree in check_tree:
@@ -66,7 +64,7 @@ def build_visualization_data():
     # Each dict is like {test_name: visualization_annotation_dict}
     for test_type_tree in data_table_annotations:
         loc = data_table_annotations.index(test_type_tree)
-        data_table_annotations[loc] = {test_type_tree.keys()[0]: json.loads(test_type_tree.values()[0]['annotations']['visualization'])}
+        data_table_annotations[loc] = {list(test_type_tree.keys())[0]: json.loads(list(test_type_tree.values())[0]['annotations']['visualization'])}
 
     # Delete all old data line objects
     visualization_data_api.delete_all()

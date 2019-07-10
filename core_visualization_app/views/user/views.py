@@ -42,8 +42,8 @@ def index(request):
             nav_key = active_ontology.id
 
             # get the navigation from the cache
-            if nav_key in navigation_cache:  # if template_id in navigation_cache:
-                navigation = navigation_cache.get(nav_key)  # navigation_cache.get(template_id)
+            if nav_key in navigation_cache:
+                navigation = navigation_cache.get(nav_key)
             else:
                 # create the navigation
                 navigation = create_navigation_tree_from_owl_file(active_ontology.content)
@@ -74,9 +74,9 @@ def index(request):
             select_subcategory.fields['subcategories'].choices = select_subcategory_tuples
 
         except exceptions.DoesNotExist as e_does_not_exist:
-            error = {"error": e_does_not_exist.message}
+            error = {"error": str(e_does_not_exist)}
         except Exception as e:
-            error = {"error": e.message}
+            error = {"error": str(e)}
 
     if error:
         context = error

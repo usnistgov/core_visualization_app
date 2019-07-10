@@ -14,7 +14,7 @@ def get_dict_value(dict_content, key):
 
     """
     value = 0
-    for k,v in dict_content.items():
+    for k,v in list(dict_content.items()):
         if k != key:
             return get_dict_value(v, key)
         else:
@@ -59,11 +59,11 @@ def get_test_type_tree(category_tree, test_type_name):
     """
     owl_node_categories = CQL_NAMESPACE + test_type_name
 
-    if owl_node_categories in category_tree.keys():
+    if owl_node_categories in list(category_tree.keys()):
         return category_tree[owl_node_categories]
 
     else:
-        if 'children' in category_tree.keys():
+        if 'children' in list(category_tree.keys()):
             return get_test_type_tree(category_tree['children'], test_type_name)
         else:
             item = category_tree.popitem()
@@ -132,7 +132,7 @@ def get_children_trees(tree):
 
     """
     keys_list = []
-    for key in tree.keys():
+    for key in list(tree.keys()):
         if key.startswith(CQL_NAMESPACE):
             keys_list.append(key)
 
@@ -155,8 +155,8 @@ def check_children(tree):
     Returns:  list of children trees if the original tree is a Parent. Otherwise return the original tree in a list of 1 elt
 
     """
-    new_tree = tree.values()[0]
-    if 'children' in new_tree.keys():
+    new_tree = list(tree.values())[0]
+    if 'children' in list(new_tree.keys()):
         if new_tree['children']:
             check_list = get_children_trees(new_tree)
         else:

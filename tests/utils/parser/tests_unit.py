@@ -33,12 +33,3 @@ class TestParseCell(TestCase):
         result = ''
         # Assert
         self.assertTrue(parsed_cell == result)
-
-    def test_parse_cell_unicode(self):
-        # Arrange
-        value = unicode('unicode')
-        # Act
-        parsed_cell = parser.parse_cell(value)
-        result = 'unicode'
-        # Assert
-        self.assertTrue(parsed_cell == result)

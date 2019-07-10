@@ -11,10 +11,7 @@ def parse_cell(value):
 
     """
     if value:
-        if isinstance(value, unicode):
-            dict_value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
-        else:
-            dict_value = str(value)
+        dict_value = str(value)
     else:
         dict_value = ''
 

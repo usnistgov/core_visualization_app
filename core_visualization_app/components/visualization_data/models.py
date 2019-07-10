@@ -83,11 +83,19 @@ class DataLine(Document):
         Returns:
 
         """
+        # Get the existing data line data
         doc_id = str(doc_id)
-        data_list = DataLine.objects.get(test_type=test_type, project_id=project_id, doc_id=doc_id).data
-        data_list[param] = value
-        DataLine.objects.filter(test_type=test_type, project_id=project_id, doc_id=doc_id).update(data=data_list)
-        return DataLine.objects.get(test_type=test_type, project_id=project_id, doc_id=doc_id)
+        data_line = DataLine.objects.get(test_type=test_type, project_id=project_id, doc_id=doc_id)
+        data_dict = data_line.data
+
+        # Define the new data
+        data_new_element = {param: value}
+        data_dict.update(data_new_element)
+
+        # Update the database
+        DataLine.objects.filter(pk=data_line.pk).update(data=data_dict)
+
+        return data_line
 
     @staticmethod
     def get_lines(test_type, projects_list):

@@ -7,7 +7,7 @@ from core_visualization_app.permissions import rights
 
 
 class Visualization(models.Model):
-    class Meta:
+    class Meta(object):
         verbose_name = 'core_visualization_app'
         default_permissions = ()
         permissions = (

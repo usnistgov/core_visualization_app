@@ -56,6 +56,6 @@ class SelectedTest(Document):
         try:
             return SelectedTest.objects.filter(is_selected=True)[0]
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
-            raise exceptions.ModelError(ex.message)
+            raise exceptions.ModelError(str(ex))

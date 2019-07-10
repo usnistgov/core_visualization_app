@@ -25,7 +25,7 @@ def get_category_tree(category_name):
     owl_node_categories = CQL_NAMESPACE + category_name
     categories_tree = 0
 
-    for ontology_key, ontology_value in tree.items():
+    for ontology_key, ontology_value in list(tree.items()):
         if ontology_key != owl_main_node:
             continue
         categories_tree = get_children_child_tree(ontology_value, owl_node_categories)
@@ -61,10 +61,10 @@ def get_children_child_tree(tree, key):
     """
     child_tree = None
 
-    for tree_key, tree_value in tree.items():
+    for tree_key, tree_value in list(tree.items()):
         if tree_key != 'children':
             continue
-        for sub_key, sub_tree in tree_value.items():
+        for sub_key, sub_tree in list(tree_value.items()):
             if sub_key == key:
                 child_tree = sub_tree
 
@@ -100,16 +100,16 @@ def get_subcategories_tuples(categories, categories_tree):
         category = categories[i]
         subcategories = []
         i += 1
-        for k, v in category_tree.items():
+        for k, v in list(category_tree.items()):
             if k == 'children':
-                for k2, v2 in v.items():
+                for k2, v2 in list(v.items()):
                     if k2.startswith(CQL_NAMESPACE):
                         subcategory = k2.split(CQL_NAMESPACE)[1]
                         subcategories.append((subcategory, subcategory))
                     bool = False
-                    for k3, v3 in v2.items():
+                    for k3, v3 in list(v2.items()):
                         if k3 == 'children':
-                            for k4, v4 in v3.items():
+                            for k4, v4 in list(v3.items()):
                                 if k4.startswith(CQL_NAMESPACE) and not bool:
                                     bool = True
                                     subcategories.remove((subcategory, subcategory))
