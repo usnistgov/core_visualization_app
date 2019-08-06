@@ -1,4 +1,4 @@
-Django==1.11.22
+Django==1.11.23
 # Installs: django-mongoengine==0.2.1
 https://github.com/MongoEngine/django-mongoengine/tarball/master#egg=django-mongoengine-0.2.1
 django-simple-menu==1.2.1
