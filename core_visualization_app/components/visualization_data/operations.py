@@ -338,7 +338,7 @@ def execute_link_query(template_id, filters, projection, path):
         except Exception as e:
             logger.error(str(e))
 
-        filter_result = Data.execute_query(json_filter, None)
+        filter_result = Data.execute_query(json_filter, [])
 
         filter_id = {document.id for document in filter_result}
         if filter_id:
