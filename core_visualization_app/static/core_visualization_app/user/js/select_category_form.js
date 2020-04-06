@@ -8,7 +8,7 @@ var onRadioChanged = function(event){
      document.getElementById("select-subcategory-form").style.visibility = "visible";
      document.getElementById("load-test-data").style.visibility = "hidden";
     $.ajax({
-        url : 'select-category-form',
+        url : select_category_form,
         type : "POST",
         data : {
             category,
@@ -21,7 +21,7 @@ var onRadioChanged = function(event){
             };
         },
         error: function(data){
-            console.log("Error");
+            console.log("Error select_category_form");
         }
     });
 }

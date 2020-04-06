@@ -43,7 +43,7 @@ def index(request):
 
             # get the navigation from the cache
             if nav_key in navigation_cache:
-                navigation = navigation_cache.get(nav_key)
+                navigation = navigation_cache.get(str(nav_key))
             else:
                 # create the navigation
                 navigation = create_navigation_tree_from_owl_file(active_ontology.content)
@@ -66,7 +66,6 @@ def index(request):
             # Get the existing subcategories from the ontology
             subcategories_tuples_list = category_api.get_subcategories_tuples(categories_tuples, categories_tree)
             select_subcategory_tuples = []
-
             for i in range(1, len(subcategories_tuples_list), 2):
                 for tuples in subcategories_tuples_list[i]:
                     select_subcategory_tuples.append(tuples)
@@ -86,7 +85,6 @@ def index(request):
             'subcategories': select_subcategory,
             'categories': select_category,
         }
-
     assets = {
         "js": [
             {

@@ -1,6 +1,6 @@
 """ Add Visualization in main menu
 """
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from menu import Menu, MenuItem
 
 visualization_children = (

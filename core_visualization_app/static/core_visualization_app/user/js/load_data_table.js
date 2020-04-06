@@ -6,7 +6,7 @@ load and display data table
 var onClick = function(event){
    document.getElementById("loading_background").style.visibility = "visible";
    $.ajax({
-    url:"load-test-data",
+    url: load_test_data,
     success: function(data) {
         document.getElementById("loading_background").style.visibility = "hidden";
         document.getElementById("data-table-section").style.visibility = "visible";
@@ -46,7 +46,7 @@ var onClick = function(event){
         $('#demo_plot').html(plot);
 
         $.ajax({
-     url: "update-selection-forms",
+     url: update_selection_forms,
      type: "GET",
      dataType: "json",
      success: function(data) {
@@ -87,7 +87,7 @@ var onChangeConfigurationsX = function(event){
 	new_parameter = $("#select-x-parameter-form :selected").attr('value');
 	parameter_type = 'x_parameter';
     $.ajax({
-        url : 'update-configuration',
+        url : update_configuration,
         type : "POST",
         data : {
             new_parameter,
@@ -96,7 +96,6 @@ var onChangeConfigurationsX = function(event){
         success: function(data) {
         document.getElementById("loading_background").style.visibility = "hidden";
 
-
         var plot = '';
         plot += data.div ;
         plot += '';
@@ -104,7 +103,7 @@ var onChangeConfigurationsX = function(event){
         $('#demo_plot').html(plot);
 
            $.ajax({
-        url: "update-custom-form",
+        url: update_custom_form,
         type: "GET",
         dataType: "json",
         success: function(data) {
@@ -134,7 +133,7 @@ var onChangeConfigurationsY = function(event){
 	new_parameter = $("#select-y-parameter-form :selected").attr('value');
 	parameter_type = 'y_parameter';
     $.ajax({
-        url : 'update-configuration',
+        url : update_configuration,
         type : "POST",
         data : {
             new_parameter,
@@ -142,7 +141,6 @@ var onChangeConfigurationsY = function(event){
         },
         success: function(data) {
         document.getElementById("loading_background").style.visibility = "hidden";
-
 
         var plot = '';
         plot += data.div ;
@@ -163,7 +161,7 @@ var onChangeConfigurationsCustom = function(event){
 	new_parameter = $("#select-custom-parameter-form :selected").attr('value');
 	parameter_type = 'custom_parameter';
     $.ajax({
-        url : 'update-configuration',
+        url : update_configuration,
         type : "POST",
         data : {
             new_parameter,

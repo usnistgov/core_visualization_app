@@ -6,11 +6,14 @@
 var onCheckboxChanged = function(event){
     project = $(this).attr("value");
     $.ajax({
-        url : 'select-projects-form',
+        url : select_projects_form,
         type : "POST",
         data : {
             project,
         },
+        error: function(data){
+            console.log("Error select_projects_form");
+        }
        });
 }
 

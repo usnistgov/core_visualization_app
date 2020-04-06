@@ -5,8 +5,9 @@
  */
 var onSubRadioChanged = function(event){
     subcategory = $(this).attr("value");
+    console.log("RADIO CHANGED BUTTON")
     $.ajax({
-        url : 'select-subcategory-form',
+        url : select_subcategory_form,
         type : "POST",
         data : {
             subcategory,
@@ -16,7 +17,7 @@ var onSubRadioChanged = function(event){
             //document.getElementById("load-test-data").addAttribute(selectedTest=data);
         },
         error: function(data){
-            console.log("Error");
+            console.log("Error subcategory");
         }
     });
 }
