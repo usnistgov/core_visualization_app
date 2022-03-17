@@ -5,7 +5,7 @@ from re import sub
 
 
 def req_link(external_url):
-    egg_link = sub(r'https://[^=]+=', '', external_url)
+    egg_link = sub(r"https://[^=]+=", "", external_url)
     return "==".join(egg_link.rsplit("-", 1))
 
 
@@ -32,7 +32,7 @@ chdir(normpath(join(abspath(__file__), pardir)))
 
 setup(
     name="core_visualization_app",
-    version="1.2.0",
+    version="1.3.0",
     description="Visualization app",
     long_description=long_desc,
     author="NIST IT Lab",

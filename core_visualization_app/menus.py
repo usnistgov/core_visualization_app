@@ -4,7 +4,11 @@ from django.urls import reverse
 from menu import Menu, MenuItem
 
 visualization_children = (
-    MenuItem("Manage visualization data", reverse("admin:core_visualization_app_manage_data"), icon="list"),
+    MenuItem(
+        "Manage visualization data",
+        reverse("admin:core_visualization_app_manage_data"),
+        icon="list",
+    ),
 )
 
 Menu.add_item(

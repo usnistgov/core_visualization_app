@@ -2,7 +2,7 @@ import unicodedata
 
 
 def parse_cell(value):
-    """ Return the parsed value to insert it within the data table.
+    """Return the parsed value to insert it within the data table.
 
     Args:
         value:
@@ -13,13 +13,13 @@ def parse_cell(value):
     if value:
         dict_value = str(value)
     else:
-        dict_value = ''
+        dict_value = ""
 
-    value = ''
-    dict_value.split(',')
+    value = ""
+    dict_value.split(",")
 
     for elt in dict_value:
-        if not elt == ',':
+        if not elt == ",":
             value += elt
 
     return value

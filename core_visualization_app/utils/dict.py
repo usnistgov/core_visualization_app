@@ -1,10 +1,10 @@
 import json
 
-CQL_NAMESPACE = "http://siam.nist.gov/Database-Navigation-Ontology#"
+from core_visualization_app.settings import CQL_NAMESPACE
 
 
 def get_dict_value(dict_content, key):
-    """  Recursive method to get the value deep inside json tree
+    """Recursive method to get the value deep inside json tree
 
     Args:
         dict_content:  json tree
@@ -14,7 +14,7 @@ def get_dict_value(dict_content, key):
 
     """
     value = 0
-    for k,v in list(dict_content.items()):
+    for k, v in list(dict_content.items()):
         if k != key:
             return get_dict_value(v, key)
         else:
@@ -32,23 +32,29 @@ def get_dict_path_value(dict_content, path):
     Returns:
 
     """
-    path_list = path.split('.')
-
+    path_list = path.split(".")
     if dict_content:
-        if path_list[0] == 'dict_content':
-            return get_dict_path_value(dict_content, path[(len(path_list[0])+1):])
+        try:
+            if path_list[0] == "dict_content":
+                return get_dict_path_value(
+                    dict_content, path[(len(path_list[0]) + 1) :]
+                )
 
-        if len(path_list) == 1:
-            return dict_content[path]
-        else:
-            substr_length = len(path_list[0]) + 1  # +1 to substring the point
-            return get_dict_path_value(dict_content[path_list[0]], path[substr_length:])
+            if len(path_list) == 1:
 
-    return ''
+                return dict_content[path]
+            else:
+                substr_length = len(path_list[0]) + 1  # +1 to substring the point
+                return get_dict_path_value(
+                    dict_content[path_list[0]], path[substr_length:]
+                )
+        except:
+            return ""
+    return ""
 
 
 def get_test_type_tree(category_tree, test_type_name):
-    """ Recursive method to get the test selected tree inside a category tree
+    """Recursive method to get the test selected tree inside a category tree
 
     Args:
         category_tree: category tree
@@ -63,8 +69,8 @@ def get_test_type_tree(category_tree, test_type_name):
         return category_tree[owl_node_categories]
 
     else:
-        if 'children' in list(category_tree.keys()):
-            return get_test_type_tree(category_tree['children'], test_type_name)
+        if "children" in list(category_tree.keys()):
+            return get_test_type_tree(category_tree["children"], test_type_name)
         else:
             item = category_tree.popitem()
             if item[0].startswith(CQL_NAMESPACE):
@@ -74,7 +80,7 @@ def get_test_type_tree(category_tree, test_type_name):
 
 
 def get_list_inside_dict(dict_path, dict_content):
-    """ return a list of a single dict.
+    """return a list of a single dict.
     This method goes throughout the dict 'dict_content' given in argument according to the path 'dict_path'
 
     Args:
@@ -85,9 +91,9 @@ def get_list_inside_dict(dict_path, dict_content):
 
     """
     if not isinstance(dict_path, list):
-        dict_path = dict_path.split('.')
+        dict_path = dict_path.split(".")
 
-    if dict_path[0] == 'dict_content':
+    if dict_path[0] == "dict_content":
         dict_path.pop(0)
 
     if isinstance(dict_content, dict):
@@ -115,7 +121,9 @@ def get_dicts_inside_list_of_dict(list_path, list_of_dict):
     """
     while len(list_path) > 1:
         for dict_to_parse in list_of_dict:
-            list_of_dict[list_of_dict.index(dict_to_parse)] = dict_to_parse[list_path[0]]
+            list_of_dict[list_of_dict.index(dict_to_parse)] = dict_to_parse[
+                list_path[0]
+            ]
         list_path = list_path[1:]
 
     if len(list_path) == 1:
@@ -137,11 +145,11 @@ def get_children_trees(tree):
             keys_list.append(key)
 
     if not keys_list:
-        return get_children_trees(tree['children'])
+        return get_children_trees(tree["children"])
 
     trees_list = []
     for key in keys_list:
-        trees_list.append({key.split('#')[-1]: tree[key]})
+        trees_list.append({key.split("#")[-1]: tree[key]})
 
     return trees_list
 
@@ -156,8 +164,8 @@ def check_children(tree):
 
     """
     new_tree = list(tree.values())[0]
-    if 'children' in list(new_tree.keys()):
-        if new_tree['children']:
+    if "children" in list(new_tree.keys()):
+        if new_tree["children"]:
             check_list = get_children_trees(new_tree)
         else:
             check_list = [tree]

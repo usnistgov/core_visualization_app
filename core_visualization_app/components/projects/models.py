@@ -8,18 +8,16 @@ from mongoengine import errors as mongoengine_errors
 
 from core_main_app.commons import exceptions
 
-CQL_NAMESPACE = "http://siam.nist.gov/Database-Navigation-Ontology#"
-
 
 class Projects(Document):
-    """ Data Structure to handle the selected projects
-    """
+    """Data Structure to handle the selected projects"""
+
     name = fields.StringField(blank=True)
     is_selected = fields.BooleanField(default=False)
 
     @staticmethod
     def create_project(project_name):
-        """ Create project with the given argument as project name and return the project
+        """Create project with the given argument as project name and return the project
 
         Args:
             project_name:
@@ -32,7 +30,7 @@ class Projects(Document):
 
     @staticmethod
     def get_project_by_name(project_name):
-        """ Return the project with the given name
+        """Return the project with the given name
 
         Args:
             project_name:
@@ -44,7 +42,7 @@ class Projects(Document):
 
     @staticmethod
     def toggle_project_selection(project_name, selection):
-        """ Toggle the boolean that indicates if a project is selected or not.
+        """Toggle the boolean that indicates if a project is selected or not.
         Return the project with the given project name
 
         Args:
@@ -59,7 +57,7 @@ class Projects(Document):
 
     @staticmethod
     def get_selected_projects_name():
-        """ Return the list of all the projects names whose 'is_selected' is True
+        """Return the list of all the projects names whose 'is_selected' is True
 
         Returns:
 
@@ -78,11 +76,9 @@ class Projects(Document):
 
     @staticmethod
     def delete_all_projects():
-        """ Delete all projects
+        """Delete all projects
 
         Returns:
 
         """
         Projects.objects.all().delete()
-
-

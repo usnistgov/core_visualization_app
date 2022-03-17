@@ -18,10 +18,14 @@ def manage_visualization_data(request):
     assets = {
         "js": [
             {
-                "path": 'core_visualization_app/admin/js/build_visualization_data.js',
-                "is_raw": False
+                "path": "core_visualization_app/admin/js/build_visualization_data.js",
+                "is_raw": False,
             }
         ]
     }
 
-    return admin_render(request, 'core_visualization_app/admin/manage_visualization_data.html', assets=assets)
+    return admin_render(
+        request,
+        "core_visualization_app/admin/manage_visualization_data.html",
+        assets=assets,
+    )

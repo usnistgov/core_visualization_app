@@ -2,15 +2,14 @@
 projects api
 """
 
+from core_visualization_app.settings import CQL_NAMESPACE
 from core_visualization_app.components.projects.models import Projects
 from core_visualization_app.utils import dict as dict_utils
 import core_explore_tree_app.components.data.query as query_database_api
 
-CQL_NAMESPACE = "http://siam.nist.gov/Database-Navigation-Ontology#"
-
 
 def delete_all_projects():
-    """ Delete all projects
+    """Delete all projects
 
     Returns:
 
@@ -19,7 +18,7 @@ def delete_all_projects():
 
 
 def get_all_projects_list(navigation, template_id):
-    """ Return the list of the projects names tuples to put in the Django forms
+    """Return the list of the projects names tuples to put in the Django forms
 
     Args:
         navigation:
@@ -36,7 +35,7 @@ def get_all_projects_list(navigation, template_id):
 
 
 def get_projects(navigation, template_id):
-    """  Get all the existing projects from the database
+    """Get all the existing projects from the database
 
     Args:
         navigation:
@@ -46,21 +45,29 @@ def get_projects(navigation, template_id):
 
     """
     # Get the filter related to the projects
-    owl_node_project = CQL_NAMESPACE + 'AMProject'
+    owl_node_project = CQL_NAMESPACE + "AMProject"
     navigation_projects = navigation.get_by_name(owl_node_project)
 
     projects_id = []
 
     # All the navigation objects are identical so it is enough to get the information we need from the first one
-    if 'filter' in navigation_projects[0].options and navigation_projects[0].options['filter'] is not None:
-        project_filter = navigation_projects[0].options['filter']
-    if 'projection' in navigation_projects[0].options and navigation_projects[0].options['projection'] is not None:
-        project_projection = navigation_projects[0].options['projection']
+    if (
+        "filter" in navigation_projects[0].options
+        and navigation_projects[0].options["filter"] is not None
+    ):
+        project_filter = navigation_projects[0].options["filter"]
+    if (
+        "projection" in navigation_projects[0].options
+        and navigation_projects[0].options["projection"] is not None
+    ):
+        project_projection = navigation_projects[0].options["projection"]
 
     if not (project_filter and project_projection is None):
-        projects = query_database_api.execute_query(template_id, [project_filter], project_projection)
+        projects = query_database_api.execute_query(
+            template_id, [project_filter], project_projection
+        )
         for project in projects:
-            project_id = dict_utils.get_dict_value(project.dict_content, 'projectID')
+            project_id = dict_utils.get_dict_value(project.dict_content, "projectID")
             if project_id not in projects_id:
                 Projects.create_project(project_id)
                 projects_id.append(project_id)
@@ -73,7 +80,7 @@ def get_projects(navigation, template_id):
 
 
 def create_project(project_name):
-    """ Create project with the given argument as project name and return the project
+    """Create project with the given argument as project name and return the project
 
     Args:
         project_name:
@@ -85,7 +92,7 @@ def create_project(project_name):
 
 
 def get_project_by_name(project_name):
-    """ Return the project with the given name
+    """Return the project with the given name
 
     Args:
         project_name:
@@ -97,7 +104,7 @@ def get_project_by_name(project_name):
 
 
 def toggle_project_selection(project_name, selection):
-    """ Toggle the boolean that indicates if a project is selected or not.
+    """Toggle the boolean that indicates if a project is selected or not.
     Return the project with the given project name
 
     Args:
@@ -111,10 +118,9 @@ def toggle_project_selection(project_name, selection):
 
 
 def get_selected_projects_name():
-    """ Return the list of all the projects names whose 'is_selected' is True
+    """Return the list of all the projects names whose 'is_selected' is True
 
     Returns:
 
     """
     return Projects.get_selected_projects_name()
-

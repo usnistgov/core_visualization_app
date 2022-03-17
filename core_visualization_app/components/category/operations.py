@@ -2,14 +2,13 @@
 Operations on category objects
 """
 
+from core_visualization_app.settings import CQL_NAMESPACE
 import core_explore_tree_app.components.query_ontology.api as query_ontology_api
 import core_explore_tree_app.parser.parser as ontology_parser
 
-CQL_NAMESPACE = "http://siam.nist.gov/Database-Navigation-Ontology#"
-
 
 def get_category_tree(category_name):
-    """ Get the parsed ontology tree related to the given category name
+    """Get the parsed ontology tree related to the given category name
 
     Args:
         category_name:
@@ -21,7 +20,7 @@ def get_category_tree(category_name):
     active_ontology = query_ontology_api.get_active()
 
     tree = ontology_parser.parse_ontology(active_ontology.content)
-    owl_main_node = CQL_NAMESPACE + 'AMTests'
+    owl_main_node = CQL_NAMESPACE + "AMTests"
     owl_node_categories = CQL_NAMESPACE + category_name
     categories_tree = 0
 
@@ -33,7 +32,7 @@ def get_category_tree(category_name):
 
 
 def get_subcategory_tree(test_selected_name, category_tree):
-    """ Get the parsed ontology tree related to the given test selected name
+    """Get the parsed ontology tree related to the given test selected name
 
     Args:
         test_selected_name:
@@ -49,7 +48,7 @@ def get_subcategory_tree(test_selected_name, category_tree):
 
 
 def get_children_child_tree(tree, key):
-    """ Return the value of a dict corresponding to the key given as argument. This dict must be a child of the
+    """Return the value of a dict corresponding to the key given as argument. This dict must be a child of the
     tree given as argument and 'children' is the parent key.
 
     Args:
@@ -62,7 +61,7 @@ def get_children_child_tree(tree, key):
     child_tree = None
 
     for tree_key, tree_value in list(tree.items()):
-        if tree_key != 'children':
+        if tree_key != "children":
             continue
         for sub_key, sub_tree in list(tree_value.items()):
             if sub_key == key:
@@ -72,7 +71,7 @@ def get_children_child_tree(tree, key):
 
 
 def get_subcategories_list(category_name, category_tree):
-    """ Get all the category tree subclasses (ie. subcategories)
+    """Get all the category tree subclasses (ie. subcategories)
 
     :param category_tree related to a single category
     :return: list of subcategories names
@@ -87,7 +86,7 @@ def get_subcategories_list(category_name, category_tree):
 
 
 def get_subcategories_tuples(categories, categories_tree):
-    """ Get all the existing categories subclasses (ie. subcategories) from the active ontology as a list of tuples
+    """Get all the existing categories subclasses (ie. subcategories) from the active ontology as a list of tuples
 
     :param categories (Build and powder only for now)
     :param categories_tree (ordereddict of each category)
@@ -101,14 +100,14 @@ def get_subcategories_tuples(categories, categories_tree):
         subcategories = []
         i += 1
         for k, v in list(category_tree.items()):
-            if k == 'children':
+            if k == "children":
                 for k2, v2 in list(v.items()):
                     if k2.startswith(CQL_NAMESPACE):
                         subcategory = k2.split(CQL_NAMESPACE)[1]
                         subcategories.append((subcategory, subcategory))
                     bool = False
                     for k3, v3 in list(v2.items()):
-                        if k3 == 'children':
+                        if k3 == "children":
                             for k4, v4 in list(v3.items()):
                                 if k4.startswith(CQL_NAMESPACE) and not bool:
                                     bool = True
