@@ -194,12 +194,11 @@ def multi_barchart(xy_all_dicts, plot):
             step = truediv(i + 1, n) - truediv(2, n)
 
         source = ColumnDataSource(data=data)
-
         p.vbar(
             x=dodge("x_range", step, range=p.x_range),
             top="y_data",
             color=color,
-            legend=y_name,
+            legend_label=y_name,
             width=width,
             source=source,
         )
@@ -278,7 +277,9 @@ def scatter_graph(xy_all_dicts, plot):
 
         source = ColumnDataSource(data)
         y_name = plot.y_parameters[i]
-        p.circle(x="x_data", y="y_data", color=color, source=source, legend=y_name)
+        p.circle(
+            x="x_data", y="y_data", color=color, source=source, legend_label=y_name
+        )
 
     p.xaxis.axis_label = active_x
     layout = column(p)
@@ -438,7 +439,6 @@ def pie_chart(xy_all_dicts, plot, x_value=None):
         tooltips="@number: @value",
         x_range=(-0.5, 1.0),
     )
-
     p.wedge(
         x=0,
         y=1,
@@ -447,7 +447,7 @@ def pie_chart(xy_all_dicts, plot, x_value=None):
         end_angle=cumsum("angle"),
         line_color="white",
         fill_color="color",
-        legend="number",
+        legend_label="number",
         source=data,
     )
 
