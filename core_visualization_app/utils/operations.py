@@ -1,20 +1,8 @@
-"""
-projects api
-"""
+"""Visualization  parser utils operations"""
 
 from core_visualization_app.settings import CQL_NAMESPACE
-from core_visualization_app.components.projects.models import Projects
-from core_visualization_app.utils import dict as dict_utils
 import core_explore_tree_app.components.data.query as query_database_api
-
-
-def delete_all_projects():
-    """Delete all projects
-
-    Returns:
-
-    """
-    return Projects.delete_all_projects()
+from core_visualization_app.utils import dict as dict_utils
 
 
 def get_all_projects_list(navigation, template_id):
@@ -69,7 +57,6 @@ def get_projects(navigation, template_id):
         for project in projects:
             project_id = dict_utils.get_dict_value(project.dict_content, "projectID")
             if project_id not in projects_id:
-                Projects.create_project(project_id)
                 projects_id.append(project_id)
 
     projects_id_tuples = []
@@ -77,50 +64,3 @@ def get_projects(navigation, template_id):
         projects_id_tuples.append((project_id, project_id))
 
     return projects_id_tuples
-
-
-def create_project(project_name):
-    """Create project with the given argument as project name and return the project
-
-    Args:
-        project_name:
-
-    Returns:
-
-    """
-    return Projects.create_project(project_name)
-
-
-def get_project_by_name(project_name):
-    """Return the project with the given name
-
-    Args:
-        project_name:
-
-    Returns:
-
-    """
-    return Projects.get_project_by_name(project_name)
-
-
-def toggle_project_selection(project_name, selection):
-    """Toggle the boolean that indicates if a project is selected or not.
-    Return the project with the given project name
-
-    Args:
-        project_name:
-        selection:
-
-    Returns:
-
-    """
-    return Projects.toggle_project_selection(project_name, selection)
-
-
-def get_selected_projects_name():
-    """Return the list of all the projects names whose 'is_selected' is True
-
-    Returns:
-
-    """
-    return Projects.get_selected_projects_name()

@@ -351,7 +351,6 @@ def get_data_content(test_name, selected_projects_name):
             if param in list(data_line_dict.keys()):
                 row[parameters_list.index(param)] = data_line_dict[param]
         data_table_list.append(row)
-
     # Delete empty columns
     data_table_list = list(zip(*data_table_list))
     data_table_list = [x for x in data_table_list if any(x[1:])]

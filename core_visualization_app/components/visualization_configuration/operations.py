@@ -18,7 +18,6 @@ import core_explore_tree_app.components.query_ontology.api as query_ontology_api
 from core_visualization_app.components.visualization_configuration import (
     api as visualization_config_api,
 )
-import core_visualization_app.components.projects.api as projects_api
 from core_visualization_app.utils import dict as dict_utils
 
 
@@ -57,18 +56,22 @@ def load_all_dicts(data_table, plot):
     return xy_all_dicts
 
 
-def load_visualization(test_name, data_table=None):
+def load_visualization(request, test_name, data_table=None):
     """Return script, div two html strings that will be inserted within the view.
 
     Args:
+        request:
         test_name:
         data_table:
 
     Returns:
 
     """
-    if visualization_config_api.is_plot(test_name):
-        plot = visualization_config_api.get_active_plot(test_name)
+    # Get the current session
+    session_id = request.session.session_key
+
+    if visualization_config_api.is_plot(session_id, test_name):
+        plot = visualization_config_api.get_plot(session_id, test_name)
     else:
         return None, None
 
@@ -77,44 +80,56 @@ def load_visualization(test_name, data_table=None):
             return None, None
         xy_all_dicts = load_all_dicts(data_table, plot)
         plot = visualization_config_api.update_plot_xy_values(
-            plot.plot_name, plot.test_name, xy_all_dicts
+            session_id, plot.plot_name, plot.test_name, xy_all_dicts
         )
 
     else:
         xy_all_dicts = visualization_config_api.get_xy_values(plot)
 
+    active_x = request.session["active_x"]
     if plot.plot_name == "Piechart":
-        active_custom = visualization_config_api.get_active_custom(plot)
-        visualization_plot = pie_chart(xy_all_dicts, plot, active_custom)
-    if plot.plot_name == "MultiBarchart":
-        visualization_plot = multi_barchart(xy_all_dicts, plot)
-    if plot.plot_name == "ScatterGraph":
-        visualization_plot = scatter_graph(xy_all_dicts, plot)
-    if plot.plot_name == "Boxplot":
-        visualization_plot = box_plot(xy_all_dicts, plot)
-    if plot.plot_name == "Barchart":
-        visualization_plot = bar_chart(xy_all_dicts, plot)
+        # Reaching page as the index so no active custom parameters
+        if data_table:
+            visualization_plot = pie_chart(
+                session_id, active_x, xy_all_dicts, plot, None
+            )
+        # Changing parameters so we might have an active custom parameter
+        else:
+            active_custom = request.session["active_custom"]
+            visualization_plot = pie_chart(
+                session_id, active_x, xy_all_dicts, plot, active_custom
+            )
 
+    if plot.plot_name == "MultiBarchart":
+        visualization_plot = multi_barchart(active_x, xy_all_dicts, plot)
+    if plot.plot_name == "ScatterGraph":
+        visualization_plot = scatter_graph(active_x, xy_all_dicts, plot)
+    if plot.plot_name == "Boxplot":
+        active_y = request.session["active_y"]
+        visualization_plot = box_plot(active_x, active_y, xy_all_dicts, plot)
+    if plot.plot_name == "Barchart":
+        active_y = request.session["active_y"]
+        visualization_plot = bar_chart(active_x, active_y, xy_all_dicts, plot)
     if visualization_plot:
         script, div = components(visualization_plot)
     else:
         return None, None
-
+    request.session["xy_all_dicts"] = xy_all_dicts
     return script, div
 
 
-def multi_barchart(xy_all_dicts, plot):
+def multi_barchart(active_x, xy_all_dicts, plot):
     """Build a multibar chart and return the plot or None
     if there is no sufficient data to build the plot
 
     Args:
+        active_x:
         xy_all_dicts:
         plot:
 
     Returns:
 
     """
-    active_x = visualization_config_api.get_active_x(plot)
     y_parameters = visualization_config_api.get_y_parameters(plot)
 
     x_range = []
@@ -162,7 +177,6 @@ def multi_barchart(xy_all_dicts, plot):
 
     n = len(y_parameters)
     width = truediv(1, n) - 0.1
-
     for i in range(0, len(y_parameters)):
         xy_dict = xy_all_dicts[active_x + y_parameters[i]]
         classification = {}
@@ -206,22 +220,21 @@ def multi_barchart(xy_all_dicts, plot):
         p.y_range.start = 0
 
     layout = column(p)
-
     return layout
 
 
-def scatter_graph(xy_all_dicts, plot):
+def scatter_graph(active_x, xy_all_dicts, plot):
     """Build a scatter chart and return the plot or None
     if there is no sufficient data to build the plot
 
     Args:
+        active_x:
         xy_all_dicts:
         plot:
 
     Returns:
 
     """
-    active_x = visualization_config_api.get_active_x(plot)
 
     all_colors = [
         "#1f77b4",
@@ -280,18 +293,18 @@ def scatter_graph(xy_all_dicts, plot):
         p.circle(
             x="x_data", y="y_data", color=color, source=source, legend_label=y_name
         )
-
     p.xaxis.axis_label = active_x
     layout = column(p)
 
     return layout
 
 
-def bar_chart(xy_all_dicts, plot):
+def bar_chart(active_x, active_y, xy_all_dicts, plot):
     """Build a bar chart and return the plot or None
     if there is no sufficient data to build the plot
 
     Args:
+        active_x:
         xy_all_dicts:
         plot:
 
@@ -299,9 +312,6 @@ def bar_chart(xy_all_dicts, plot):
 
     """
     # load groups
-    active_x = visualization_config_api.get_active_x(plot)
-    active_y = visualization_config_api.get_active_y(plot)
-
     xy_dict = xy_all_dicts[active_x + active_y]
 
     if not xy_dict:
@@ -350,15 +360,15 @@ def bar_chart(xy_all_dicts, plot):
     p.y_range.start = 0
 
     layout = column(p)
-
     return layout
 
 
-def pie_chart(xy_all_dicts, plot, x_value=None):
+def pie_chart(session_id, active_x, xy_all_dicts, plot, x_value=None):
     """Build a pie chart and return the plot or None
     if there is no sufficient data to build the plot
 
     Args:
+        session_id:
         xy_all_dicts:
         plot:
         x_value:
@@ -366,11 +376,8 @@ def pie_chart(xy_all_dicts, plot, x_value=None):
     Returns:
 
     """
-    active_x = visualization_config_api.get_active_x(plot)
-
     # initialization of select button options
     active_x_values = []
-
     for i in range(0, len(plot.y_parameters)):
         if (active_x + plot.y_parameters[i]) in xy_all_dicts:
             xy_dict_list = xy_all_dicts[active_x + plot.y_parameters[i]]
@@ -379,11 +386,9 @@ def pie_chart(xy_all_dicts, plot, x_value=None):
                     active_x_values.append(
                         elt[active_x]
                     )  # active_x_values = list of all different project id if project id is active x
-
     plot = visualization_config_api.update_custom_parameters(
-        plot.plot_name, plot.test_name, active_x_values
+        session_id, plot.plot_name, plot.test_name, active_x_values
     )
-
     if x_value is None:
         x_value = active_x_values[0]  # Default value
 
@@ -401,10 +406,8 @@ def pie_chart(xy_all_dicts, plot, x_value=None):
             if y_data:
                 y_value = truediv(sum(y_data), len(y_data))
                 x[plot.y_parameters[j]] = y_value
-
     if not x:
         return None
-
     data = (
         pandas.Series(x).reset_index(name="value").rename(columns={"index": "number"})
     )
@@ -447,7 +450,7 @@ def pie_chart(xy_all_dicts, plot, x_value=None):
         end_angle=cumsum("angle"),
         line_color="white",
         fill_color="color",
-        legend_label="number",
+        legend="number",
         source=data,
     )
 
@@ -456,26 +459,22 @@ def pie_chart(xy_all_dicts, plot, x_value=None):
     p.grid.grid_line_color = None
 
     layout = column(p)
-
     return layout
 
 
-def box_plot(xy_all_dicts, plot):
+def box_plot(active_x, active_y, xy_all_dicts, plot):
     """Build a box plot and return the plot or None
     if there is no sufficient data to build the plot
 
     Args:
+        active_x:
         xy_all_dicts:
         plot:
 
     Returns:
 
     """
-    active_x = visualization_config_api.get_active_x(plot)
-    active_y = visualization_config_api.get_active_y(plot)
-
     xy_dict = xy_all_dicts[active_x + active_y]
-
     if not xy_dict:
         return None
 
@@ -492,7 +491,6 @@ def box_plot(xy_all_dicts, plot):
     max_len = 20
 
     score = y_axis
-
     for i in range(0, len(score)):
         if score[i]:
             if builds[i] not in cats:
@@ -515,20 +513,13 @@ def box_plot(xy_all_dicts, plot):
     groups_len = len(groups)
 
     width = configure_plot_width(groups, int(200 * groups_len * truediv(max_len, 20)))
-
     p = figure(
         plot_height=600,
         plot_width=width,
         background_fill_color="#EFE8E2",
-        title="Box plot - "
-        + plot.test_name
-        + ": "
-        + plot.active_y
-        + " by "
-        + plot.active_x,
+        title="Box plot - " + plot.test_name + ": " + active_y + " by " + active_x,
         x_range=cats,
     )
-
     # if no outliers, shrink lengths of stems to be no longer than the minimums or maximums
     qmin = groups.quantile(q=0.00)
     qmax = groups.quantile(q=1.00)
@@ -557,7 +548,6 @@ def box_plot(xy_all_dicts, plot):
     p.xaxis.major_label_text_font_size = "12pt"
 
     layout = column(p)
-
     return layout
 
 
@@ -575,7 +565,6 @@ def set_x_axis_parameters(list_of_dicts):
 
     for x_dict in list_of_dicts:
         x_parameters.append(x_dict["name"])
-
     return x_parameters
 
 
@@ -625,7 +614,6 @@ def set_y_axis_parameters(list_of_dicts, project_filter):
         if "name" in list_of_dicts[0]:
             for y_dict in list_of_dicts:
                 y_parameters.append(y_dict["name"])
-
     return y_parameters
 
 
@@ -663,29 +651,32 @@ def get_y_parameters(path, template_id, project_filter, query_filter):
     return y_parameters
 
 
-def set_plots(test_selected_tree, test_name):
+def set_plots(request, test_selected_tree, test_name, projects_name):
     """Use the ontology annotation to set the python visualization configuration objects
 
     Args:
+        request:
         test_selected_tree:
         test_name:
+        projects_name:
 
     Returns:
 
     """
+    session_id = request.session.session_key
+
     visualization_annotation = json.loads(
         test_selected_tree["annotations"]["visualization"]
     )
     plots_annotation = visualization_annotation[1]["data"]
-    projects = projects_api.get_selected_projects_name()
+    projects = projects_name
     project_filter = []
-
     query = visualization_annotation[0]["project"]
     for project in projects:
         project_filter.append({query: project})
 
-    # New visualization -> must reset all plots to avoid issues
-    visualization_config_api.delete_plots()
+    # New visualization -> must reset all plots associated to the session to avoid issues
+    visualization_config_api.delete_session_plots(session_id)
 
     for plot_annotation in plots_annotation:
         default = False
@@ -703,8 +694,10 @@ def set_plots(test_selected_tree, test_name):
 
         if x_parameters and y_parameters:
             plot = visualization_config_api.set_plots(
-                plot_name, default, x_parameters, y_parameters, test_name
+                session_id, plot_name, default, x_parameters, y_parameters, test_name
             )
+            request.session["active_x"] = x_parameters[0]
+            request.session["active_y"] = y_parameters[0]
 
     return
 

@@ -5,9 +5,6 @@ Category models
 import json
 
 from django_mongoengine import fields, Document
-from mongoengine import errors as mongoengine_errors
-
-from core_main_app.commons import exceptions
 from core_visualization_app.components.category import operations
 
 
@@ -15,7 +12,6 @@ class Category(Document):
     """Data Structure to handle the selected Category"""
 
     name = fields.StringField(blank=True)
-    is_selected = fields.BooleanField(default=False)
     subcategories = fields.StringField(blank=True)
 
     @staticmethod
@@ -52,35 +48,6 @@ class Category(Document):
         return Category.objects.get(name=category_name)
 
     @staticmethod
-    def get_selected_category_name():
-        """Return the only one selected category object name
-
-        Returns:
-
-        """
-        selected_category = Category.objects.get(is_selected=True)
-        return selected_category.name
-
-    @staticmethod
-    def toggle_category_selection(category_name):
-        """Toggle the boolean that indicates if a category is selected or not.
-        Return the category with the given category name
-
-        Args:
-            category_name:
-
-        Returns:
-
-        """
-        for category in Category.objects.all():
-            if category.name == category_name:
-                Category.objects.filter(name=category.name).update(is_selected=True)
-            else:
-                Category.objects.filter(name=category.name).update(is_selected=False)
-
-        return Category.objects.get(name=category_name)
-
-    @staticmethod
     def get_subcategories(category):
         """Return the subcategories list belonging to the given category
 
@@ -107,17 +74,3 @@ class Category(Document):
 
         """
         Category.objects.all().delete()
-
-    @staticmethod
-    def get_selected_category():
-        """Return the selected category
-
-        Returns:
-
-        """
-        try:
-            return Category.objects.get(is_selected=True)
-        except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as ex:
-            raise exceptions.ModelError(str(ex))

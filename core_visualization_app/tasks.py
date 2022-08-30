@@ -10,11 +10,14 @@ import core_explore_tree_app.components.query_ontology.api as query_ontology_api
 import core_explore_tree_app.parser.parser as ontology_parser
 import core_visualization_app.components.visualization_data.api as visualization_data_api
 import core_visualization_app.components.visualization_data.operations as visualization_data_operations
-import core_visualization_app.components.projects.api as projects_api
 from core_explore_tree_app.components.navigation.api import (
     create_navigation_tree_from_owl_file,
 )
 from core_visualization_app.utils import dict as visualization_utils
+from core_visualization_insitu_app.utils.operations import get_all_projects_list
+from core_visualization_app.components.visualization_configuration import (
+    api as visualization_config_api,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +26,10 @@ logger = logging.getLogger(__name__)
 def build_visualization_data():
     """Build data table object"""
     logger.info("START load visualization data")
+
+    # Delete all visualization plots
+    visualization_config_api.delete_plots()
+
     navigation_cache = caches["navigation"]
 
     # get the active ontology
@@ -39,10 +46,8 @@ def build_visualization_data():
             nav_key, navigation
         )  # navigation_cache.set(template_id, navigation)
 
-    # Reset the projects
-    projects_api.delete_all_projects()
     # Get the existing projects from the navigation
-    all_projects_list = projects_api.get_all_projects_list(navigation, template_id)
+    projects = get_all_projects_list(navigation, template_id)
 
     # Get the AM Tests branch from the all ontology tree
     all_tree = ontology_parser.parse_ontology(active_ontology.content)
@@ -76,6 +81,6 @@ def build_visualization_data():
     # Create all DataLine objects
     for data_table_annotation in data_table_annotations:
         visualization_data_operations.load_test_data(
-            data_table_annotation, all_projects_list, template_id
+            data_table_annotation, projects, template_id
         )
     logger.info("FINISH load visualization data")

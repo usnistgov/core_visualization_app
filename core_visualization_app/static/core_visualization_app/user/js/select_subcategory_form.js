@@ -5,7 +5,7 @@
  */
 var onSubRadioChanged = function(event){
     subcategory = $(this).attr("value");
-    console.log("RADIO CHANGED BUTTON")
+    project = $("#select-subcategory-form :selected").attr("value");
     $.ajax({
         url : select_subcategory_form,
         type : "POST",

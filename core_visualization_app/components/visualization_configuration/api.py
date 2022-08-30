@@ -4,12 +4,13 @@ Visualization configuration api
 from core_visualization_app.components.visualization_configuration.models import Plot
 
 
-def set_plots(plot_name, default, x_parameters, y_parameters, test_name):
-    """If plot already exists we get it, otherwise it is created and saved.
+def set_plots(session_id, plot_name, default, x_parameters, y_parameters, test_name):
+    """If plot already exists for the current session we get it, otherwise it is created and saved.
     Then, we need to update the plot types list if the plot does not belong to it.
     and return the plot
 
     Args:
+        session_id:
         plot_name:
         default:
         x_parameters:
@@ -19,96 +20,35 @@ def set_plots(plot_name, default, x_parameters, y_parameters, test_name):
     Returns:
 
     """
-    return Plot.set_plots(plot_name, default, x_parameters, y_parameters, test_name)
+    return Plot.set_plots(
+        session_id, plot_name, default, x_parameters, y_parameters, test_name
+    )
 
 
-def get_active_plot(test_name):
-    """Return the only one active plot with the according test name
+def get_plot(session_id, test_name):
+    """Return the only one active plot with the according test name for the session
 
     Args:
+        session_id:
         test_name:
 
     Returns:
 
     """
-    return Plot.get_active_plot(test_name)
+    return Plot.get_plot(session_id, test_name)
 
 
-def update_active_x(test_name, plot_name, active_x):
-    """Update the active x parameter. It remains one of the x parameters list element and return the plot
-
-    Args:
-        test_name:
-        plot_name:
-        active_x:
-
-    Returns:
-
-    """
-    return Plot.update_active_x(test_name, plot_name, active_x)
-
-
-def update_active_y(test_name, plot_name, active_y):
-    """Update the active y parameter. It remains one of the y parameters list element and return the plot
+def is_plot(session_id, test_name):
+    """Return True if a plot exists for the session that gets the given argument as test name
 
     Args:
-        test_name:
-        plot_name:
-        active_y:
-
-    Returns:
-
-    """
-    return Plot.update_active_y(test_name, plot_name, active_y)
-
-
-def update_active_plot(test_name, plot_name):
-    """Update the active plot. It remains one of the plot types list element and return the plot
-
-    Args:
-        test_name:
-        plot_name:
-
-    Returns:
-
-    """
-    return Plot.update_active_plot(test_name, plot_name)
-
-
-def is_plot(test_name):
-    """Return True if a plot exists that gets the given argument as test name
-
-    Args:
+        session_id:
         test_name:
 
     Returns:
 
     """
-    return Plot.is_plot(test_name)
-
-
-def get_active_x(plot):
-    """Return the active x which is a parameter belonging to the x parameters list
-
-    Args:
-        plot:
-
-    Returns:
-
-    """
-    return Plot.get_active_x(plot)
-
-
-def get_active_y(plot):
-    """Return the active y which is a parameter belonging to the y parameters list
-
-    Args:
-        plot:
-
-    Returns:
-
-    """
-    return Plot.get_active_y(plot)
+    return Plot.is_plot(session_id, test_name)
 
 
 def get_x_parameters(plot):
@@ -135,6 +75,16 @@ def get_y_parameters(plot):
     return Plot.get_y_parameters(plot)
 
 
+def delete_session_plots(session_id):
+    """Delete all the plots objects associated to the current session
+    Args:
+        session_id:
+    Returns:
+
+    """
+    return Plot.delete_session_plots(session_id)
+
+
 def delete_plots():
     """Delete all the plots objects
 
@@ -156,6 +106,47 @@ def get_plot_name(plot):
     return Plot.get_plot_name(plot)
 
 
+def update_custom_parameters(session_id, plot_name, test_name, custom_parameters):
+    """Update the custom parameters field of plot and return the plot
+
+    Args:
+        session_id:
+        plot_name:
+        test_name:
+        custom_parameters:
+
+    Returns:
+
+    """
+    return Plot.update_custom_parameters(
+        session_id, plot_name, test_name, custom_parameters
+    )
+
+
+def get_custom_param(plot):
+    """Return the custom parameters list which is the parameters list used for special types of plots
+
+    Args:
+        plot:
+
+    Returns:
+
+    """
+    return Plot.get_custom_param(plot)
+
+
+def has_custom_param(plot):
+    """Return True if a plot gets an instantiate 'custom_parameters' field
+
+    Args:
+        plot:
+
+    Returns:
+
+    """
+    return Plot.has_custom_param(plot)
+
+
 def has_xy_values(plot):
     """Return True if a plot gets an instantiate 'xy_values' field
 
@@ -166,34 +157,6 @@ def has_xy_values(plot):
 
     """
     return Plot.has_xy_values(plot)
-
-
-def update_plot_xy_values(plot_name, test_name, xy_values):
-    """Update the xy_values field of plot and return the plot
-
-    Args:
-        plot_name:
-        test_name:
-        xy_values:
-
-    Returns:
-
-    """
-    return Plot.update_plot_xy_values(plot_name, test_name, xy_values)
-
-
-def update_custom_parameters(plot_name, test_name, custom_parameters):
-    """Update the custom parameters field of plot and return the plot
-
-    Args:
-        plot_name:
-        test_name:
-        custom_parameters:
-
-    Returns:
-
-    """
-    return Plot.update_custom_parameters(plot_name, test_name, custom_parameters)
 
 
 def get_xy_values(plot):
@@ -209,34 +172,26 @@ def get_xy_values(plot):
     return Plot.get_xy_values(plot)
 
 
-def get_custom_param(plot):
-    """Return the custom parameters list which is the parameters list used for special types of plots
+def update_plot_xy_values(session_id, plot_name, test_name, xy_values):
+    """Update the xy_values field of plot and return the plot
 
     Args:
-        plot:
+        session_id:
+        plot_name:
+        test_name:
+        xy_values:
 
     Returns:
 
     """
-    return Plot.get_custom_param(plot)
+    return Plot.update_plot_xy_values(session_id, plot_name, test_name, xy_values)
 
 
-def get_active_custom(plot):
-    """Return the active custom parameter which belongs to the custom parameters list
-
-    Args:
-        plot:
-
-    Returns:
-
-    """
-    return Plot.get_active_custom(plot)
-
-
-def update_active_custom(plot_name, test_name, active_custom):
+def update_active_custom(session_id, plot_name, test_name, active_custom):
     """Update the active custom field of plot and return the plot
 
     Args:
+        session_id:
         plot_name:
         test_name:
         active_custom:
@@ -244,16 +199,4 @@ def update_active_custom(plot_name, test_name, active_custom):
     Returns:
 
     """
-    return Plot.update_active_custom(plot_name, test_name, active_custom)
-
-
-def has_custom_param(plot):
-    """Return True if a plot gets an instantiate 'custom_parameters' field
-
-    Args:
-        plot:
-
-    Returns:
-
-    """
-    return Plot.has_custom_param(plot)
+    return Plot.update_active_custom(session_id, plot_name, test_name, active_custom)

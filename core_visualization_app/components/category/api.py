@@ -18,19 +18,6 @@ def get_all_categories_names():
     return Category.get_all_categories_names()
 
 
-def toggle_category_selection(category_name):
-    """Toggle the boolean that indicates if a category is selected or not.
-    Return the category with the given category name
-
-    Args:
-        category_name:
-
-    Returns:
-
-    """
-    return Category.toggle_category_selection(category_name)
-
-
 def get_subcategories(category):
     """Return the subcategories list belonging to the given category
 
@@ -101,15 +88,6 @@ def get_category_by_name(category_name):
 
     """
     return Category.get_category_by_name(category_name)
-
-
-def get_selected_category_name():
-    """Return the only one selected category object name
-
-    Returns:
-
-    """
-    return Category.get_selected_category_name()
 
 
 def delete_all_categories():

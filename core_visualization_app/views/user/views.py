@@ -9,7 +9,7 @@ from core_explore_tree_app.components.navigation.api import (
 )
 from core_main_app.commons import exceptions
 from core_main_app.utils.rendering import render
-from core_visualization_app.components.projects import api as projects_api
+from core_visualization_insitu_app.utils.operations import get_all_projects_list
 from core_visualization_app.components.category import api as category_api
 from core_visualization_app.views.user.forms import (
     SelectProjects,
@@ -31,7 +31,8 @@ def index(request):
     """
     error = None
     active_ontology = None
-
+    if request.session.get("selected_project"):
+        request.session["selected_project"] = []
     try:
         # Set up the needed explore tree related objects to get the queries
         # get the active ontology
@@ -59,12 +60,15 @@ def index(request):
                     nav_key, navigation
                 )  # navigation_cache.set(template_id, navigation)
 
-            # Delete all projects and category objects from a previous instance
-            projects_api.delete_all_projects()
+            # Delete all category objects from a previous instance
             category_api.delete_all_categories()
 
             # Get the existing projects from the navigation
-            projects_tuples = projects_api.get_projects(navigation, template_id)
+            projects = get_all_projects_list(navigation, template_id)
+            projects_tuples = []
+            for project in projects:
+                projects_tuples.append(tuple([project, project]))
+
             select_projects = SelectProjects()
             select_projects.fields["projects"].choices = projects_tuples
 
